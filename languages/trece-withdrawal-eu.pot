@@ -1,0 +1,388 @@
+# Copyright (C) 2026 13Node
+# This file is distributed under the same license as the Withdrawal EU Law plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Withdrawal EU Law 1.0.0\n"
+"Report-Msgid-Bugs-To: https://13node.com/support\n"
+"POT-Creation-Date: 2026-05-30 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Antigravity\n"
+"X-Domain: trece-withdrawal-eu\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_html__;esc_html_e\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Plugin Name of the plugin
+#: trece-withdrawal-eu.php
+msgid "Withdrawal EU Law"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: trece-withdrawal-eu.php
+msgid "https://13node.com"
+msgstr ""
+
+#. Author of the plugin
+#: trece-withdrawal-eu.php
+msgid "13Node"
+msgstr ""
+
+#. Description of the plugin
+#: trece-withdrawal-eu.php
+msgid "This plugin provides tools to help implement EU withdrawal rights. It does not constitute legal advice. Please consult a qualified legal professional to ensure full compliance with applicable regulations."
+msgstr ""
+
+#: includes/admin/class-admin-menu.php
+msgid "Withdrawals"
+msgstr ""
+
+#: includes/admin/class-admin-menu.php
+msgid "All Requests"
+msgstr ""
+
+#: includes/admin/class-admin-menu.php
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-admin-menu.php
+msgid "Export Withdrawals"
+msgstr ""
+
+#: includes/frontend/class-my-account.php
+msgid "Right of withdrawal"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Continue to review"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Confirm withdrawal"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Back"
+msgstr ""
+
+#: includes/admin/class-admin-request.php
+msgid "Update Status"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Full name"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Email address"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Order number"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Order date"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Scope"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Full order"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Partial order"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Products affected"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "I accept the privacy policy"
+msgstr ""
+
+#: includes/frontend/class-form.php
+msgid "Withdraw from contract here"
+msgstr ""
+
+#: includes/common/class-statuses.php
+msgid "Pending"
+msgstr ""
+
+#: includes/common/class-statuses.php
+msgid "Accepted"
+msgstr ""
+
+#: includes/common/class-statuses.php
+msgid "Rejected"
+msgstr ""
+
+#: includes/common/class-statuses.php
+msgid "Completed"
+msgstr ""
+
+#: includes/frontend/class-form-handler.php
+msgid "Your withdrawal request has been submitted successfully."
+msgstr ""
+
+#: includes/frontend/class-form-handler.php
+msgid "Receipt hash (SHA-256):"
+msgstr ""
+
+#: includes/frontend/class-form-handler.php
+msgid "The withdrawal period has expired for this order."
+msgstr ""
+
+#: includes/frontend/class-form-handler.php
+msgid "The email address does not match the order."
+msgstr ""
+
+#: includes/frontend/class-form-handler.php
+msgid "You must consent to the digital content terms to proceed."
+msgstr ""
+
+#: includes/frontend/class-my-account.php
+msgid "Withdraw"
+msgstr ""
+
+#: includes/frontend/class-my-account.php
+msgid "View request"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Withdrawal deadline (days)"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Default: 14 days as per EU directive"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Email notifications"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Send email to admin on new withdrawal request"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Send confirmation email to consumer"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Form page"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Select the page containing the withdrawal form shortcode"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Require order number"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Require the consumer to provide an order number"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Privacy policy page"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Select the privacy policy page to link in the form"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Trader information"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Company name, address, and contact details for the withdrawal form"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Enable checkout consents"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Show consent checkboxes for digital content and services at checkout"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Digital content consent text"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "I expressly consent to the provision of digital content and acknowledge that I lose my right of withdrawal."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Service consent text"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "I expressly request that the service begins before the withdrawal period expires and acknowledge that I will lose my right of withdrawal once the service has been fully performed."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Enable product exclusions"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Show exclusion notices on excluded product pages"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Excluded categories"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Select product categories excluded from the right of withdrawal"
+msgstr ""
+
+#: includes/emails/class-email-admin-new.php
+#, php-format
+msgid "New withdrawal request #%s"
+msgstr ""
+
+#: includes/emails/class-email-consumer-confirmation.php
+msgid "Your withdrawal request has been received"
+msgstr ""
+
+#: includes/emails/class-email-consumer-status.php
+#, php-format
+msgid "Withdrawal request #%s status updated"
+msgstr ""
+
+#: includes/frontend/class-annex-form.php
+msgid "Model withdrawal form"
+msgstr ""
+
+#: includes/frontend/class-annex-form.php
+msgid "To:"
+msgstr ""
+
+#: includes/frontend/class-annex-form.php
+msgid "I/We hereby give notice that I/we withdraw from my/our contract of sale of the following goods/for the provision of the following service:"
+msgstr ""
+
+#: includes/frontend/class-annex-form.php
+msgid "Ordered on / received on:"
+msgstr ""
+
+#: includes/frontend/class-annex-form.php
+msgid "Name of consumer(s):"
+msgstr ""
+
+#: includes/frontend/class-annex-form.php
+msgid "Address of consumer(s):"
+msgstr ""
+
+#: includes/frontend/class-annex-form.php
+msgid "Signature of consumer(s) (only if this form is notified on paper):"
+msgstr ""
+
+#: includes/frontend/class-annex-form.php
+msgid "Date:"
+msgstr ""
+
+#: includes/frontend/class-my-account.php
+msgid "Withdrawal Requests"
+msgstr ""
+
+#: includes/frontend/class-my-account.php
+msgid "No withdrawal requests found."
+msgstr ""
+
+#: includes/frontend/class-my-account.php
+msgid "Request #"
+msgstr ""
+
+#: includes/frontend/class-my-account.php
+msgid "Date"
+msgstr ""
+
+#: includes/frontend/class-my-account.php
+#: includes/admin/class-admin-list.php
+msgid "Status"
+msgstr ""
+
+#: includes/frontend/class-my-account.php
+msgid "View"
+msgstr ""
+
+#: includes/admin/class-admin-list.php
+msgid "ID"
+msgstr ""
+
+#: includes/admin/class-admin-list.php
+msgid "Customer"
+msgstr ""
+
+#: includes/admin/class-admin-list.php
+msgid "Email"
+msgstr ""
+
+#: includes/admin/class-admin-list.php
+msgid "Order"
+msgstr ""
+
+#: includes/admin/class-admin-list.php
+msgid "Actions"
+msgstr ""
+
+#: includes/common/class-helpers.php
+msgid "N/A"
+msgstr ""
+
+#: includes/common/class-helpers.php
+msgid "Guest"
+msgstr ""
+
+#: includes/admin/class-admin-request.php
+msgid "Withdrawal request created."
+msgstr ""
+
+#: includes/admin/class-admin-request.php
+msgid "Status updated successfully."
+msgstr ""
+
+#: includes/admin/class-admin-request.php
+msgid "Invalid request."
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Digital content"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Service"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Sealed goods"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Custom/personalized"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Perishable goods"
+msgstr ""
+
+#: includes/admin/class-settings.php
+msgid "Other exclusion"
+msgstr ""

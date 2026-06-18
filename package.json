@@ -1,0 +1,11 @@
+{
+  "name": "trece-withdrawal-eu",
+  "private": true,
+  "scripts": {
+    "build": "esbuild assets/css/admin.css assets/css/product-notice.css assets/css/public-form.css --minify --outdir=assets/css --out-extension:.css=.min.css && esbuild assets/js/admin.js assets/js/checkout-consents.js assets/js/public-form.js --minify --outdir=assets/js --out-extension:.js=.min.js",
+    "watch": "esbuild assets/css/admin.css assets/css/product-notice.css assets/css/public-form.css --minify --outdir=assets/css --out-extension:.css=.min.css --watch & esbuild assets/js/admin.js assets/js/checkout-consents.js assets/js/public-form.js --minify --outdir=assets/js --out-extension:.js=.min.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

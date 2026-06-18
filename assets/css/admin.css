@@ -1,0 +1,262 @@
+/**
+ * Withdrawal EU Law – Admin Styles
+ *
+ * @package    Trece_Withdrawal_EU
+ * @subpackage Assets/CSS
+ * @author     13Node
+ * @since      1.0.0
+ *
+ * Complementary styles for the WordPress admin panel.
+ * Designed to sit alongside core admin styles without conflicts.
+ */
+
+/* ============================================================
+   Status Badges
+   ============================================================ */
+
+.trece-wdeu-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.trece-wdeu-status-pending {
+    background-color: #fef3cd;
+    color: #856404;
+}
+
+.trece-wdeu-status-accepted {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.trece-wdeu-status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.trece-wdeu-status-completed {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+/* ============================================================
+   Detail Page Layout
+   ============================================================ */
+
+.trece-wdeu-detail-wrap {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.trece-wdeu-detail-main {
+    flex: 1;
+    min-width: 400px;
+}
+
+.trece-wdeu-detail-sidebar {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   Metaboxes
+   ============================================================ */
+
+.trece-wdeu-metabox {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.trece-wdeu-metabox h3 {
+    margin: 0;
+    padding: 12px 16px;
+    border-bottom: 1px solid #ccd0d4;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    background: #f9f9f9;
+    border-radius: 4px 4px 0 0;
+}
+
+.trece-wdeu-metabox-content {
+    padding: 16px;
+}
+
+.trece-wdeu-metabox table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.trece-wdeu-metabox table th {
+    text-align: left;
+    padding: 8px 12px;
+    width: 140px;
+    color: #646970;
+    font-weight: 400;
+    vertical-align: top;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.trece-wdeu-metabox table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f0f0f1;
+    word-break: break-word;
+}
+
+.trece-wdeu-metabox table tr:last-child th,
+.trece-wdeu-metabox table tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================================
+   Consent Display
+   ============================================================ */
+
+.trece-wdeu-consent-box {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: #f6f7f7;
+}
+
+.trece-wdeu-consent-box .consent-label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.trece-wdeu-consent-box .consent-accepted {
+    color: #155724;
+}
+
+.trece-wdeu-consent-box .consent-declined {
+    color: #721c24;
+}
+
+.trece-wdeu-consent-box .consent-meta {
+    font-size: 12px;
+    color: #646970;
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+/* ============================================================
+   Export Page
+   ============================================================ */
+
+.trece-wdeu-export-form {
+    max-width: 600px;
+}
+
+.trece-wdeu-export-form .form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.trece-wdeu-export-form .form-row > * {
+    flex: 1;
+    min-width: 180px;
+}
+
+.trece-wdeu-export-form label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+/* ============================================================
+   Settings Tags
+   ============================================================ */
+
+.trece-wdeu-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 6px;
+    vertical-align: middle;
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.trece-wdeu-tag-mandatory {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.trece-wdeu-tag-recommended {
+    background-color: #fd7e14;
+    color: #fff;
+}
+
+.trece-wdeu-tag-optional {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+/* ============================================================
+   Legal Disclaimer
+   ============================================================ */
+
+.trece-wdeu-legal-disclaimer {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-left: 4px solid #ffc107;
+    padding: 16px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    line-height: 1.5;
+}
+
+.trece-wdeu-legal-disclaimer p {
+    margin: 0;
+    color: #856404;
+    font-size: 13px;
+}
+
+.trece-wdeu-legal-disclaimer p + p {
+    margin-top: 0.5em;
+}
+
+/* ============================================================
+   Responsive – WordPress Admin Breakpoint
+   ============================================================ */
+
+@media (max-width: 782px) {
+    .trece-wdeu-detail-wrap {
+        flex-direction: column;
+    }
+
+    .trece-wdeu-detail-main {
+        min-width: 0;
+    }
+
+    .trece-wdeu-detail-sidebar {
+        width: 100%;
+    }
+
+    .trece-wdeu-export-form .form-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+}

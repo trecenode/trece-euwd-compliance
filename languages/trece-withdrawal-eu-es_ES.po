@@ -1,0 +1,390 @@
+# Spanish (Spain) translation for Withdrawal EU Law plugin.
+# Copyright (C) 2026 13Node
+# This file is distributed under the same license as the Withdrawal EU Law plugin.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Withdrawal EU Law 1.0.0\n"
+"Report-Msgid-Bugs-To: https://13node.com/support\n"
+"POT-Creation-Date: 2026-05-30 00:00+0000\n"
+"PO-Revision-Date: 2026-05-30 00:00+0000\n"
+"Last-Translator: 13Node <info@13node.com>\n"
+"Language-Team: Spanish (Spain) <info@13node.com>\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Antigravity\n"
+"X-Domain: trece-withdrawal-eu\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_html__;esc_html_e\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Plugin Name of the plugin
+#: trece-withdrawal-eu.php
+msgid "Withdrawal EU Law"
+msgstr "Ley de Desistimiento UE"
+
+#. Plugin URI of the plugin
+#: trece-withdrawal-eu.php
+msgid "https://13node.com"
+msgstr "https://13node.com"
+
+#. Author of the plugin
+#: trece-withdrawal-eu.php
+msgid "13Node"
+msgstr "13Node"
+
+#. Description of the plugin
+#: trece-withdrawal-eu.php
+msgid "This plugin provides tools to help implement EU withdrawal rights. It does not constitute legal advice. Please consult a qualified legal professional to ensure full compliance with applicable regulations."
+msgstr "Este plugin proporciona herramientas para ayudar a implementar los derechos de desistimiento de la UE. No constituye asesoramiento legal. Consulte a un profesional jurídico cualificado para garantizar el pleno cumplimiento de la normativa aplicable."
+
+#: includes/admin/class-admin-menu.php
+msgid "Withdrawals"
+msgstr "Desistimientos"
+
+#: includes/admin/class-admin-menu.php
+msgid "All Requests"
+msgstr "Todas las solicitudes"
+
+#: includes/admin/class-admin-menu.php
+msgid "Settings"
+msgstr "Ajustes"
+
+#: includes/admin/class-admin-menu.php
+msgid "Export Withdrawals"
+msgstr "Exportar desistimientos"
+
+#: includes/frontend/class-my-account.php
+msgid "Right of withdrawal"
+msgstr "Derecho de desistimiento"
+
+#: includes/frontend/class-form.php
+msgid "Continue to review"
+msgstr "Continuar a la revisión"
+
+#: includes/frontend/class-form.php
+msgid "Confirm withdrawal"
+msgstr "Confirmar desistimiento"
+
+#: includes/frontend/class-form.php
+msgid "Back"
+msgstr "Volver"
+
+#: includes/admin/class-admin-request.php
+msgid "Update Status"
+msgstr "Actualizar estado"
+
+#: includes/frontend/class-form.php
+msgid "Full name"
+msgstr "Nombre completo"
+
+#: includes/frontend/class-form.php
+msgid "Email address"
+msgstr "Dirección de email"
+
+#: includes/frontend/class-form.php
+msgid "Order number"
+msgstr "Número de pedido"
+
+#: includes/frontend/class-form.php
+msgid "Order date"
+msgstr "Fecha del pedido"
+
+#: includes/frontend/class-form.php
+msgid "Scope"
+msgstr "Alcance"
+
+#: includes/frontend/class-form.php
+msgid "Full order"
+msgstr "Pedido completo"
+
+#: includes/frontend/class-form.php
+msgid "Partial order"
+msgstr "Pedido parcial"
+
+#: includes/frontend/class-form.php
+msgid "Products affected"
+msgstr "Productos afectados"
+
+#: includes/frontend/class-form.php
+msgid "I accept the privacy policy"
+msgstr "Acepto la política de privacidad"
+
+#: includes/frontend/class-form.php
+msgid "Withdraw from contract here"
+msgstr "Desistir del contrato aquí"
+
+#: includes/common/class-statuses.php
+msgid "Pending"
+msgstr "Pendiente"
+
+#: includes/common/class-statuses.php
+msgid "Accepted"
+msgstr "Aceptado"
+
+#: includes/common/class-statuses.php
+msgid "Rejected"
+msgstr "Rechazado"
+
+#: includes/common/class-statuses.php
+msgid "Completed"
+msgstr "Completado"
+
+#: includes/frontend/class-form-handler.php
+msgid "Your withdrawal request has been submitted successfully."
+msgstr "Su solicitud de desistimiento ha sido enviada correctamente."
+
+#: includes/frontend/class-form-handler.php
+msgid "Receipt hash (SHA-256):"
+msgstr "Hash del recibo (SHA-256):"
+
+#: includes/frontend/class-form-handler.php
+msgid "The withdrawal period has expired for this order."
+msgstr "El periodo de desistimiento ha expirado para este pedido."
+
+#: includes/frontend/class-form-handler.php
+msgid "The email address does not match the order."
+msgstr "La dirección de email no coincide con el pedido."
+
+#: includes/frontend/class-form-handler.php
+msgid "You must consent to the digital content terms to proceed."
+msgstr "Debe aceptar los términos de contenido digital para continuar."
+
+#: includes/frontend/class-my-account.php
+msgid "Withdraw"
+msgstr "Desistir"
+
+#: includes/frontend/class-my-account.php
+msgid "View request"
+msgstr "Ver solicitud"
+
+#: includes/admin/class-settings.php
+msgid "Withdrawal deadline (days)"
+msgstr "Plazo de desistimiento (días)"
+
+#: includes/admin/class-settings.php
+msgid "Default: 14 days as per EU directive"
+msgstr "Por defecto: 14 días según la directiva de la UE"
+
+#: includes/admin/class-settings.php
+msgid "Email notifications"
+msgstr "Notificaciones por email"
+
+#: includes/admin/class-settings.php
+msgid "Send email to admin on new withdrawal request"
+msgstr "Enviar email al administrador ante una nueva solicitud de desistimiento"
+
+#: includes/admin/class-settings.php
+msgid "Send confirmation email to consumer"
+msgstr "Enviar email de confirmación al consumidor"
+
+#: includes/admin/class-settings.php
+msgid "Form page"
+msgstr "Página del formulario"
+
+#: includes/admin/class-settings.php
+msgid "Select the page containing the withdrawal form shortcode"
+msgstr "Seleccione la página que contiene el shortcode del formulario de desistimiento"
+
+#: includes/admin/class-settings.php
+msgid "Require order number"
+msgstr "Requerir número de pedido"
+
+#: includes/admin/class-settings.php
+msgid "Require the consumer to provide an order number"
+msgstr "Requerir que el consumidor proporcione un número de pedido"
+
+#: includes/admin/class-settings.php
+msgid "Privacy policy page"
+msgstr "Página de política de privacidad"
+
+#: includes/admin/class-settings.php
+msgid "Select the privacy policy page to link in the form"
+msgstr "Seleccione la página de política de privacidad para enlazar en el formulario"
+
+#: includes/admin/class-settings.php
+msgid "Trader information"
+msgstr "Información del comerciante"
+
+#: includes/admin/class-settings.php
+msgid "Company name, address, and contact details for the withdrawal form"
+msgstr "Nombre de la empresa, dirección y datos de contacto para el formulario de desistimiento"
+
+#: includes/admin/class-settings.php
+msgid "Enable checkout consents"
+msgstr "Activar consentimientos en el pago"
+
+#: includes/admin/class-settings.php
+msgid "Show consent checkboxes for digital content and services at checkout"
+msgstr "Mostrar casillas de consentimiento para contenido digital y servicios en el pago"
+
+#: includes/admin/class-settings.php
+msgid "Digital content consent text"
+msgstr "Texto de consentimiento de contenido digital"
+
+#: includes/admin/class-settings.php
+msgid "I expressly consent to the provision of digital content and acknowledge that I lose my right of withdrawal."
+msgstr "Consiento expresamente el suministro de contenido digital y reconozco que pierdo mi derecho de desistimiento."
+
+#: includes/admin/class-settings.php
+msgid "Service consent text"
+msgstr "Texto de consentimiento de servicio"
+
+#: includes/admin/class-settings.php
+msgid "I expressly request that the service begins before the withdrawal period expires and acknowledge that I will lose my right of withdrawal once the service has been fully performed."
+msgstr "Solicito expresamente que el servicio comience antes de que expire el plazo de desistimiento y reconozco que perderé mi derecho de desistimiento una vez que el servicio haya sido completamente ejecutado."
+
+#: includes/admin/class-settings.php
+msgid "Enable product exclusions"
+msgstr "Activar exclusiones de productos"
+
+#: includes/admin/class-settings.php
+msgid "Show exclusion notices on excluded product pages"
+msgstr "Mostrar avisos de exclusión en las páginas de productos excluidos"
+
+#: includes/admin/class-settings.php
+msgid "Excluded categories"
+msgstr "Categorías excluidas"
+
+#: includes/admin/class-settings.php
+msgid "Select product categories excluded from the right of withdrawal"
+msgstr "Seleccione las categorías de productos excluidas del derecho de desistimiento"
+
+#: includes/emails/class-email-admin-new.php
+#, php-format
+msgid "New withdrawal request #%s"
+msgstr "Nueva solicitud de desistimiento #%s"
+
+#: includes/emails/class-email-consumer-confirmation.php
+msgid "Your withdrawal request has been received"
+msgstr "Su solicitud de desistimiento ha sido recibida"
+
+#: includes/emails/class-email-consumer-status.php
+#, php-format
+msgid "Withdrawal request #%s status updated"
+msgstr "Solicitud de desistimiento #%s estado actualizado"
+
+#: includes/frontend/class-annex-form.php
+msgid "Model withdrawal form"
+msgstr "Formulario de desistimiento modelo"
+
+#: includes/frontend/class-annex-form.php
+msgid "To:"
+msgstr "A:"
+
+#: includes/frontend/class-annex-form.php
+msgid "I/We hereby give notice that I/we withdraw from my/our contract of sale of the following goods/for the provision of the following service:"
+msgstr "Por la presente comunico/comunicamos que desisto/desistimos de mi/nuestro contrato de venta de los siguientes bienes/prestación del siguiente servicio:"
+
+#: includes/frontend/class-annex-form.php
+msgid "Ordered on / received on:"
+msgstr "Pedido realizado el / recibido el:"
+
+#: includes/frontend/class-annex-form.php
+msgid "Name of consumer(s):"
+msgstr "Nombre del consumidor(es):"
+
+#: includes/frontend/class-annex-form.php
+msgid "Address of consumer(s):"
+msgstr "Dirección del consumidor(es):"
+
+#: includes/frontend/class-annex-form.php
+msgid "Signature of consumer(s) (only if this form is notified on paper):"
+msgstr "Firma del consumidor(es) (solo si el presente formulario se presenta en papel):"
+
+#: includes/frontend/class-annex-form.php
+msgid "Date:"
+msgstr "Fecha:"
+
+#: includes/frontend/class-my-account.php
+msgid "Withdrawal Requests"
+msgstr "Solicitudes de desistimiento"
+
+#: includes/frontend/class-my-account.php
+msgid "No withdrawal requests found."
+msgstr "No se encontraron solicitudes de desistimiento."
+
+#: includes/frontend/class-my-account.php
+msgid "Request #"
+msgstr "Solicitud #"
+
+#: includes/frontend/class-my-account.php
+msgid "Date"
+msgstr "Fecha"
+
+#: includes/frontend/class-my-account.php
+#: includes/admin/class-admin-list.php
+msgid "Status"
+msgstr "Estado"
+
+#: includes/frontend/class-my-account.php
+msgid "View"
+msgstr "Ver"
+
+#: includes/admin/class-admin-list.php
+msgid "ID"
+msgstr "ID"
+
+#: includes/admin/class-admin-list.php
+msgid "Customer"
+msgstr "Cliente"
+
+#: includes/admin/class-admin-list.php
+msgid "Email"
+msgstr "Email"
+
+#: includes/admin/class-admin-list.php
+msgid "Order"
+msgstr "Pedido"
+
+#: includes/admin/class-admin-list.php
+msgid "Actions"
+msgstr "Acciones"
+
+#: includes/common/class-helpers.php
+msgid "N/A"
+msgstr "N/D"
+
+#: includes/common/class-helpers.php
+msgid "Guest"
+msgstr "Invitado"
+
+#: includes/admin/class-admin-request.php
+msgid "Withdrawal request created."
+msgstr "Solicitud de desistimiento creada."
+
+#: includes/admin/class-admin-request.php
+msgid "Status updated successfully."
+msgstr "Estado actualizado correctamente."
+
+#: includes/admin/class-admin-request.php
+msgid "Invalid request."
+msgstr "Solicitud no válida."
+
+#: includes/admin/class-settings.php
+msgid "Digital content"
+msgstr "Contenido digital"
+
+#: includes/admin/class-settings.php
+msgid "Service"
+msgstr "Servicio"
+
+#: includes/admin/class-settings.php
+msgid "Sealed goods"
+msgstr "Productos precintados"
+
+#: includes/admin/class-settings.php
+msgid "Custom/personalized"
+msgstr "Personalizado/a medida"
+
+#: includes/admin/class-settings.php
+msgid "Perishable goods"
+msgstr "Productos perecederos"
+
+#: includes/admin/class-settings.php
+msgid "Other exclusion"
+msgstr "Otra exclusión"
