@@ -245,6 +245,16 @@ class Trece_WDEU_Admin_Export {
 				$products       = get_post_meta( $pid, '_trece_wdeu_products', true );
 				$excluded_items = get_post_meta( $pid, '_trece_wdeu_excluded_items', true );
 
+				// Stored JSON-encoded — decode before flattening.
+				if ( is_string( $products ) && '' !== $products ) {
+					$decoded  = json_decode( $products, true );
+					$products = is_array( $decoded ) ? $decoded : $products;
+				}
+				if ( is_string( $excluded_items ) && '' !== $excluded_items ) {
+					$decoded        = json_decode( $excluded_items, true );
+					$excluded_items = is_array( $decoded ) ? $decoded : $excluded_items;
+				}
+
 				// Flatten arrays for CSV.
 				if ( is_array( $products ) ) {
 					$products = implode( '; ', $products );

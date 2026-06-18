@@ -69,6 +69,16 @@ class Trece_WDEU_Admin_Detail {
 		$wc_order_id    = get_post_meta( $post_id, '_trece_wdeu_wc_order_id', true );
 		$excluded_items = get_post_meta( $post_id, '_trece_wdeu_excluded_items', true );
 
+		// products / excluded_items are stored JSON-encoded — decode to arrays for display.
+		if ( is_string( $products ) ) {
+			$decoded  = json_decode( $products, true );
+			$products = ( JSON_ERROR_NONE === json_last_error() ) ? $decoded : $products;
+		}
+		if ( is_string( $excluded_items ) ) {
+			$decoded        = json_decode( $excluded_items, true );
+			$excluded_items = ( JSON_ERROR_NONE === json_last_error() ) ? $decoded : $excluded_items;
+		}
+
 		$list_url = admin_url( 'admin.php?page=trece-withdrawal-eu' );
 
 		?>
@@ -225,6 +235,44 @@ class Trece_WDEU_Admin_Detail {
 									echo '<p>' . esc_html( $excluded_items ) . '</p>';
 								}
 								?>
+							</div>
+						</div>
+						<?php endif; ?>
+
+						<?php // Metabox: Activity Log (audit trail). ?>
+						<?php
+						$logs = Trece_WDEU_CPT::get_logs( $post_id );
+						if ( ! empty( $logs ) ) :
+							?>
+						<div class="postbox">
+							<h2 class="hndle"><span><?php esc_html_e( 'Activity Log', 'trece-withdrawal-eu' ); ?></span></h2>
+							<div class="inside">
+								<table class="widefat fixed striped">
+									<thead>
+										<tr>
+											<th><?php esc_html_e( 'When (UTC)', 'trece-withdrawal-eu' ); ?></th>
+											<th><?php esc_html_e( 'Event', 'trece-withdrawal-eu' ); ?></th>
+											<th><?php esc_html_e( 'Actor', 'trece-withdrawal-eu' ); ?></th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php foreach ( array_reverse( $logs ) as $log ) : ?>
+											<tr>
+												<td><?php echo esc_html( isset( $log['timestamp'] ) ? $log['timestamp'] : '' ); ?></td>
+												<td>
+													<?php echo esc_html( isset( $log['message'] ) ? $log['message'] : '' ); ?>
+													<?php if ( ! empty( $log['payload']['comment'] ) ) : ?>
+														<br /><em><?php echo esc_html( $log['payload']['comment'] ); ?></em>
+													<?php endif; ?>
+													<?php if ( ! empty( $log['payload']['ip'] ) ) : ?>
+														<br /><small><?php echo esc_html__( 'IP:', 'trece-withdrawal-eu' ) . ' ' . esc_html( $log['payload']['ip'] ); ?></small>
+													<?php endif; ?>
+												</td>
+												<td><?php echo esc_html( ucfirst( isset( $log['actor'] ) ? $log['actor'] : 'system' ) ); ?></td>
+											</tr>
+										<?php endforeach; ?>
+									</tbody>
+								</table>
 							</div>
 						</div>
 						<?php endif; ?>
@@ -539,6 +587,20 @@ class Trece_WDEU_Admin_Detail {
 		 * @param string $old_status Previous status value.
 		 */
 		do_action( 'trece_wdeu_status_changed', $post_id, $new_status, $old_status );
+
+		// Audit trail.
+		Trece_WDEU_CPT::add_log(
+			$post_id,
+			sprintf(
+				/* translators: 1: old status, 2: new status */
+				__( 'Status changed from "%1$s" to "%2$s".', 'trece-withdrawal-eu' ),
+				$old_status ? $old_status : 'pending',
+				$new_status
+			),
+			'status_' . $new_status,
+			'admin',
+			'' !== $comment ? array( 'comment' => $comment, 'user_id' => get_current_user_id() ) : array( 'user_id' => get_current_user_id() )
+		);
 
 		// Send email notification.
 		if ( class_exists( 'Trece_WDEU_Email_Service' ) ) {

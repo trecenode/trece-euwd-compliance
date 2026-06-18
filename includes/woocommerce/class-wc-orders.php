@@ -41,6 +41,124 @@ class Trece_WDEU_WC_Orders {
 
 		// Order notes on withdrawal status changes.
 		add_action( 'trece_wdeu_status_changed', array( $this, 'on_status_changed' ), 10, 4 );
+
+		// Admin UX: pending count on the WooCommerce dashboard status widget.
+		add_action( 'woocommerce_after_dashboard_status_widget', array( $this, 'dashboard_pending_count' ) );
+
+		// Admin UX: notice on the order edit screen when a request is pending.
+		add_action( 'admin_notices', array( $this, 'order_pending_notice' ) );
+	}
+
+	/* ------------------------------------------------------------------
+	 * Admin UX
+	 * ----------------------------------------------------------------*/
+
+	/**
+	 * Count of withdrawal requests still pending review.
+	 *
+	 * @return int
+	 */
+	private function pending_request_count() {
+
+		return count(
+			get_posts(
+				array(
+					'post_type'      => 'trece_withdrawal',
+					'post_status'    => 'any',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+					'meta_key'       => '_trece_wdeu_status',
+					'meta_value'     => 'pending',
+				)
+			)
+		);
+	}
+
+	/**
+	 * Append a pending-withdrawals line to the WooCommerce dashboard widget.
+	 *
+	 * @return void
+	 */
+	public function dashboard_pending_count() {
+
+		if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$count = $this->pending_request_count();
+
+		if ( ! $count ) {
+			return;
+		}
+
+		printf(
+			'<li class="trece-wdeu-pending"><a href="%1$s"><strong>%2$d</strong> %3$s</a></li>',
+			esc_url( admin_url( 'admin.php?page=trece-withdrawal-eu' ) ),
+			absint( $count ),
+			esc_html( _n( 'withdrawal request pending review', 'withdrawal requests pending review', $count, 'trece-withdrawal-eu' ) )
+		);
+	}
+
+	/**
+	 * Show a notice on the order edit screen when the order has a pending
+	 * withdrawal request awaiting review.
+	 *
+	 * @return void
+	 */
+	public function order_pending_notice() {
+
+		$screen = get_current_screen();
+
+		if ( ! $screen || ! in_array( $screen->id, array( 'shop_order', 'woocommerce_page_wc-orders' ), true ) ) {
+			return;
+		}
+
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only admin context.
+		$order_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : ( isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0 );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		if ( ! $order_id ) {
+			return;
+		}
+
+		$requests = get_posts(
+			array(
+				'post_type'      => 'trece_withdrawal',
+				'post_status'    => 'any',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'meta_key'       => '_trece_wdeu_wc_order_id',
+				'meta_value'     => $order_id,
+			)
+		);
+
+		if ( empty( $requests ) ) {
+			return;
+		}
+
+		$request_id = $requests[0];
+
+		if ( 'pending' !== get_post_meta( $request_id, '_trece_wdeu_status', true ) ) {
+			return;
+		}
+
+		$url = add_query_arg(
+			array(
+				'page'   => 'trece-withdrawal-eu',
+				'action' => 'view',
+				'id'     => $request_id,
+			),
+			admin_url( 'admin.php' )
+		);
+
+		printf(
+			'<div class="notice notice-warning"><p><strong>%1$s</strong> <a class="button button-primary" href="%2$s">%3$s</a></p></div>',
+			esc_html__( 'This order has a withdrawal request pending review.', 'trece-withdrawal-eu' ),
+			esc_url( $url ),
+			esc_html__( 'Review request', 'trece-withdrawal-eu' )
+		);
 	}
 
 	/* ------------------------------------------------------------------

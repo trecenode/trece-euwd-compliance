@@ -29,10 +29,88 @@ class Trece_WDEU_WC_Checkout {
 	 */
 	public function __construct() {
 
+		// Classic (shortcode) checkout.
 		add_action( 'woocommerce_review_order_before_submit', array( $this, 'render_consent_checkboxes' ) );
 		add_action( 'woocommerce_checkout_process', array( $this, 'validate_consent_checkboxes' ) );
 		add_action( 'woocommerce_checkout_create_order', array( $this, 'save_consent_data' ), 10, 2 );
+
+		// Block-based checkout (Store API) — WooCommerce 8.9+.
+		add_action( 'woocommerce_init', array( $this, 'register_block_consent_fields' ) );
+		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'validate_block_consent' ), 10, 2 );
+		add_action( 'woocommerce_set_additional_field_value', array( $this, 'save_block_consent' ), 10, 4 );
+
+		// Bust the cached consent-product index when catalog/category data changes.
+		add_action( 'save_post_product', array( __CLASS__, 'clear_consent_product_ids_cache' ) );
+		add_action( 'woocommerce_update_product', array( __CLASS__, 'clear_consent_product_ids_cache' ) );
+		add_action( 'created_product_cat', array( __CLASS__, 'clear_consent_product_ids_cache' ) );
+		add_action( 'edited_product_cat', array( __CLASS__, 'clear_consent_product_ids_cache' ) );
+		add_action( 'delete_product_cat', array( __CLASS__, 'clear_consent_product_ids_cache' ) );
+
 		add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'display_consents_in_admin' ) );
+	}
+
+	/**
+	 * Return the consent label texts (settings merged with defaults).
+	 *
+	 * @return array{digital_content:string,service_early:string}
+	 */
+	private function get_consent_texts() {
+
+		$settings = get_option( 'trece_wdeu_settings', array() );
+
+		$defaults = array(
+			'consent_digital_text' => __( 'I consent to the immediate supply of digital content and acknowledge that I will lose my right of withdrawal.', 'trece-withdrawal-eu' ),
+			'consent_service_text' => __( 'I request that the service begins during the withdrawal period and acknowledge that, should I withdraw, I will be liable for the proportionate cost of the service already provided.', 'trece-withdrawal-eu' ),
+		);
+
+		$settings = wp_parse_args( $settings, $defaults );
+
+		return array(
+			'digital_content' => apply_filters( 'trece_wdeu_consent_digital_text', $settings['consent_digital_text'] ),
+			'service_early'   => apply_filters( 'trece_wdeu_consent_service_text', $settings['consent_service_text'] ),
+		);
+	}
+
+	/**
+	 * Persist a single captured consent onto an order (HPOS-compatible).
+	 *
+	 * Shared by the classic and block checkout paths. Does not save the order;
+	 * the caller / WooCommerce persists it.
+	 *
+	 * @param WC_Order $order    Order object.
+	 * @param string   $type     digital_content|service_early.
+	 * @param bool     $accepted Whether the consent was accepted.
+	 *
+	 * @return void
+	 */
+	private function persist_consent( $order, $type, $accepted ) {
+
+		$texts    = $this->get_consent_texts();
+		$text     = isset( $texts[ $type ] ) ? $texts[ $type ] : '';
+		$decision = $accepted ? 'yes' : 'no';
+
+		$order->update_meta_data( '_trece_wdeu_consent_' . $type . '_text', sanitize_textarea_field( $text ) );
+		$order->update_meta_data( '_trece_wdeu_consent_' . $type . '_accepted', $decision );
+		$order->update_meta_data( '_trece_wdeu_consent_' . $type . '_timestamp', current_time( 'mysql', true ) );
+		$order->update_meta_data(
+			'_trece_wdeu_consent_' . $type . '_ip',
+			sanitize_text_field( isset( $_SERVER['REMOTE_ADDR'] ) ? wp_unslash( $_SERVER['REMOTE_ADDR'] ) : '' )
+		);
+		$order->update_meta_data(
+			'_trece_wdeu_consent_' . $type . '_user_agent',
+			sanitize_text_field( isset( $_SERVER['HTTP_USER_AGENT'] ) ? wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) : '' )
+		);
+
+		/**
+		 * Fires after a consent is captured during checkout.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param int    $order_id Order ID.
+		 * @param string $type     Consent type (digital_content|service_early).
+		 * @param string $accepted 'yes' or 'no'.
+		 */
+		do_action( 'trece_wdeu_consent_captured', $order->get_id(), $type, $decision );
 	}
 
 	/* ------------------------------------------------------------------
@@ -51,6 +129,10 @@ class Trece_WDEU_WC_Checkout {
 		$types = $this->get_cart_withdrawal_types();
 
 		if ( empty( $types ) ) {
+			return;
+		}
+
+		if ( ! self::country_in_scope( self::current_customer_country() ) ) {
 			return;
 		}
 
@@ -152,6 +234,10 @@ class Trece_WDEU_WC_Checkout {
 
 		$types = $this->get_cart_withdrawal_types();
 
+		if ( ! self::country_in_scope( self::current_customer_country() ) ) {
+			return;
+		}
+
 		if ( in_array( 'digital_content', $types, true ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce owns the checkout nonce.
 			if ( empty( $_POST['trece_wdeu_consent_digital'] ) ) {
@@ -183,59 +269,331 @@ class Trece_WDEU_WC_Checkout {
 			return;
 		}
 
-		$settings = get_option( 'trece_wdeu_settings', array() );
-
-		$defaults = array(
-			'consent_digital_text' => __( 'I consent to the immediate supply of digital content and acknowledge that I will lose my right of withdrawal.', 'trece-withdrawal-eu' ),
-			'consent_service_text' => __( 'I request that the service begins during the withdrawal period and acknowledge that, should I withdraw, I will be liable for the proportionate cost of the service already provided.', 'trece-withdrawal-eu' ),
+		$field_map = array(
+			'digital_content' => 'trece_wdeu_consent_digital',
+			'service_early'   => 'trece_wdeu_consent_service',
 		);
 
-		$settings = wp_parse_args( $settings, $defaults );
-
-		$consent_map = array(
-			'digital_content' => array(
-				'short' => 'digital',
-				'text'  => $settings['consent_digital_text'],
-			),
-			'service_early'   => array(
-				'short' => 'service',
-				'text'  => $settings['consent_service_text'],
-			),
-		);
-
-		foreach ( $consent_map as $type => $config ) {
+		foreach ( $field_map as $type => $field_name ) {
 			if ( ! in_array( $type, $types, true ) ) {
 				continue;
 			}
 
-			$field_name = 'trece_wdeu_consent_' . $config['short'];
-
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce checkout nonce.
-			$accepted = ! empty( $_POST[ $field_name ] ) ? 'yes' : 'no';
+			$accepted = ! empty( $_POST[ $field_name ] );
 
-			$order->update_meta_data( '_trece_wdeu_consent_' . $type . '_text', sanitize_textarea_field( $config['text'] ) );
-			$order->update_meta_data( '_trece_wdeu_consent_' . $type . '_accepted', $accepted );
-			$order->update_meta_data( '_trece_wdeu_consent_' . $type . '_timestamp', current_time( 'mysql', true ) );
-			$order->update_meta_data(
-				'_trece_wdeu_consent_' . $type . '_ip',
-				sanitize_text_field( isset( $_SERVER['REMOTE_ADDR'] ) ? wp_unslash( $_SERVER['REMOTE_ADDR'] ) : '' )
-			);
-			$order->update_meta_data(
-				'_trece_wdeu_consent_' . $type . '_user_agent',
-				sanitize_text_field( isset( $_SERVER['HTTP_USER_AGENT'] ) ? wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) : '' )
-			);
-
-			/**
-			 * Fires after a consent is captured during checkout.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param int    $order_id Order ID.
-			 * @param string $type     Consent type (digital_content|service_early).
-			 * @param string $accepted 'yes' or 'no'.
-			 */
-			do_action( 'trece_wdeu_consent_captured', $order->get_id(), $type, $accepted );
+			$this->persist_consent( $order, $type, $accepted );
 		}
+	}
+
+	/* ------------------------------------------------------------------
+	 * Block Checkout (Store API)
+	 * ----------------------------------------------------------------*/
+
+	/**
+	 * Register consent checkboxes as additional checkout fields for the
+	 * block-based checkout. No-op on WooCommerce versions without the API.
+	 *
+	 * The fields are shown only when the cart contains a product whose
+	 * effective withdrawal status matches (digital_content / service_early),
+	 * using a JSON-schema `hidden` rule evaluated client-side.
+	 *
+	 * @return void
+	 */
+	public function register_block_consent_fields() {
+
+		if ( ! function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
+			return;
+		}
+
+		$texts = $this->get_consent_texts();
+		$ids   = self::get_consent_product_ids();
+
+		woocommerce_register_additional_checkout_field(
+			array(
+				'id'                => 'trece-wdeu/consent-digital',
+				'label'             => $texts['digital_content'],
+				'optionalLabel'     => $texts['digital_content'],
+				'location'          => 'order',
+				'type'              => 'checkbox',
+				'required'          => false,
+				'hidden'            => self::cart_contains_schema( $ids['digital_content'] ),
+				'sanitize_callback' => static function ( $value ) {
+					return (bool) $value;
+				},
+			)
+		);
+
+		woocommerce_register_additional_checkout_field(
+			array(
+				'id'                => 'trece-wdeu/consent-service',
+				'label'             => $texts['service_early'],
+				'optionalLabel'     => $texts['service_early'],
+				'location'          => 'order',
+				'type'              => 'checkbox',
+				'required'          => false,
+				'hidden'            => self::cart_contains_schema( $ids['service_early'] ),
+				'sanitize_callback' => static function ( $value ) {
+					return (bool) $value;
+				},
+			)
+		);
+	}
+
+	/**
+	 * Validate the mandatory digital-content consent on block checkout.
+	 *
+	 * Mirrors the classic `validate_consent_checkboxes()`: digital consent is
+	 * required when the cart contains a digital_content product.
+	 *
+	 * @param WC_Order        $order   Draft order.
+	 * @param WP_REST_Request $request Store API request.
+	 *
+	 * @return void
+	 * @throws Exception When the required consent is missing.
+	 */
+	public function validate_block_consent( $order, $request ) {
+
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+
+		if ( ! self::country_in_scope( $order->get_billing_country() ) ) {
+			return;
+		}
+
+		$ids = self::get_consent_product_ids();
+
+		if ( ! $this->order_has_listed_product( $order, $ids['digital_content'] ) ) {
+			return;
+		}
+
+		$fields = $request->get_param( 'additional_fields' );
+
+		if ( empty( $fields['trece-wdeu/consent-digital'] ) ) {
+			throw new Exception(
+				esc_html__( 'You must consent to the digital content terms to proceed.', 'trece-withdrawal-eu' )
+			);
+		}
+	}
+
+	/**
+	 * Persist a block-checkout consent field onto the order.
+	 *
+	 * @param string   $key   Field id.
+	 * @param mixed    $value Submitted value.
+	 * @param string   $group Field group.
+	 * @param WC_Order $order Order object.
+	 *
+	 * @return void
+	 */
+	public function save_block_consent( $key, $value, $group, $order ) {
+
+		$map = array(
+			'trece-wdeu/consent-digital' => 'digital_content',
+			'trece-wdeu/consent-service' => 'service_early',
+		);
+
+		if ( ! isset( $map[ $key ] ) || ! $order instanceof WC_Order ) {
+			return;
+		}
+
+		$this->persist_consent( $order, $map[ $key ], ! empty( $value ) );
+	}
+
+	/**
+	 * Build the `hidden` JSON-schema rule: hide the field unless the cart
+	 * contains at least one of the given product / variation IDs.
+	 *
+	 * @param int[] $product_ids Product / variation IDs.
+	 *
+	 * @return array
+	 */
+	private static function cart_contains_schema( array $product_ids ) {
+
+		return array(
+			'cart' => array(
+				'properties' => array(
+					'items' => array(
+						'not' => array(
+							'contains' => array(
+								'enum' => array_values( array_map( 'absint', $product_ids ) ),
+							),
+						),
+					),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Whether an order contains at least one of the given product/variation IDs.
+	 *
+	 * @param WC_Order $order        Order object.
+	 * @param int[]    $product_ids  Product / variation IDs.
+	 *
+	 * @return bool
+	 */
+	private function order_has_listed_product( $order, array $product_ids ) {
+
+		if ( empty( $product_ids ) ) {
+			return false;
+		}
+
+		foreach ( $order->get_items() as $item ) {
+			$id = $item->get_variation_id() ? $item->get_variation_id() : $item->get_product_id();
+
+			if ( in_array( (int) $id, array_map( 'absint', $product_ids ), true ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Indexed list of product / variation IDs per consent-requiring status.
+	 *
+	 * Cached for a month; busted on product / category changes.
+	 *
+	 * ponytail: full published-catalog scan, cached monthly. If catalogs grow
+	 * to tens of thousands of products, pre-filter by the status meta + flagged
+	 * category terms before resolving.
+	 *
+	 * @return array{digital_content:int[],service_early:int[]}
+	 */
+	public static function get_consent_product_ids() {
+
+		$cached = get_transient( 'trece_wdeu_consent_product_ids' );
+
+		if ( is_array( $cached ) ) {
+			return $cached;
+		}
+
+		$result = array(
+			'digital_content' => array(),
+			'service_early'   => array(),
+		);
+
+		$product_ids = get_posts(
+			array(
+				'post_type'      => 'product',
+				'post_status'    => array( 'publish', 'private' ),
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			)
+		);
+
+		foreach ( $product_ids as $pid ) {
+			$status = Trece_WDEU_WC_Product::get_product_withdrawal_status( $pid );
+
+			if ( ! isset( $result[ $status ] ) ) {
+				continue;
+			}
+
+			$result[ $status ][] = (int) $pid;
+
+			// Variable products: the parent's status applies to every variation,
+			// and block-cart items report the variation ID.
+			$product = wc_get_product( $pid );
+
+			if ( $product && $product->is_type( 'variable' ) ) {
+				foreach ( $product->get_children() as $variation_id ) {
+					$result[ $status ][] = (int) $variation_id;
+				}
+			}
+		}
+
+		set_transient( 'trece_wdeu_consent_product_ids', $result, MONTH_IN_SECONDS );
+
+		return $result;
+	}
+
+	/**
+	 * Clear the cached consent-product index.
+	 *
+	 * @return void
+	 */
+	public static function clear_consent_product_ids_cache() {
+
+		delete_transient( 'trece_wdeu_consent_product_ids' );
+	}
+
+	/* ------------------------------------------------------------------
+	 * Country Applicability
+	 * ----------------------------------------------------------------*/
+
+	/**
+	 * Whether withdrawal availability is restricted by billing country.
+	 *
+	 * @return bool
+	 */
+	public static function country_scoping_enabled() {
+
+		$settings = get_option( 'trece_wdeu_settings', array() );
+
+		return ! empty( $settings['use_billing_country'] );
+	}
+
+	/**
+	 * Allowed billing countries (uppercase ISO codes).
+	 *
+	 * Falls back to the EU countries enabled in WooCommerce when none are saved.
+	 *
+	 * @return string[]
+	 */
+	public static function get_allowed_countries() {
+
+		$settings = get_option( 'trece_wdeu_settings', array() );
+		$list     = isset( $settings['allowed_countries'] ) && is_array( $settings['allowed_countries'] )
+			? $settings['allowed_countries']
+			: array();
+
+		if ( empty( $list ) && function_exists( 'WC' ) && WC()->countries ) {
+			$enabled = WC()->countries->get_allowed_countries();
+			$list    = array_intersect( array_keys( $enabled ), WC()->countries->get_european_union_countries() );
+		}
+
+		return array_values( array_map( 'strtoupper', (array) $list ) );
+	}
+
+	/**
+	 * Whether a billing country is within the withdrawal scope.
+	 *
+	 * Returns true when country scoping is disabled (no restriction).
+	 *
+	 * @param string $country ISO country code.
+	 *
+	 * @return bool
+	 */
+	public static function country_in_scope( $country ) {
+
+		if ( ! self::country_scoping_enabled() ) {
+			return true;
+		}
+
+		$country = strtoupper( (string) $country );
+
+		if ( '' === $country ) {
+			return false;
+		}
+
+		return in_array( $country, self::get_allowed_countries(), true );
+	}
+
+	/**
+	 * Billing country of the active checkout customer (cart context).
+	 *
+	 * @return string
+	 */
+	private static function current_customer_country() {
+
+		if ( function_exists( 'WC' ) && WC()->customer ) {
+			return (string) WC()->customer->get_billing_country();
+		}
+
+		return '';
 	}
 
 	/* ------------------------------------------------------------------

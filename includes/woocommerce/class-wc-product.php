@@ -335,6 +335,92 @@ class Trece_WDEU_WC_Product {
 	}
 
 	/**
+	 * Classify an order's line items into withdrawable vs. excluded.
+	 *
+	 * Exclusion rules (Art. 16):
+	 *  - other_article16        → always excluded.
+	 *  - service_early          → excluded once the customer consented to early
+	 *                             commencement.
+	 *  - digital_content        → for downloadable products, excluded only once
+	 *                             consent was given AND supply has begun (the
+	 *                             file was actually downloaded); for
+	 *                             non-downloadable digital content, consent alone
+	 *                             governs.
+	 * Everything else keeps the right of withdrawal. Mirrors the eligibility
+	 * logic used by Trece_WDEU_WC_MyAccount::has_withdrawable_items().
+	 *
+	 * @param WC_Order $order Order object.
+	 *
+	 * @return array { @type string[] $withdrawable, @type string[] $excluded }
+	 */
+	public static function classify_order_items( $order ) {
+
+		$result = array(
+			'withdrawable' => array(),
+			'excluded'     => array(),
+		);
+
+		if ( ! $order || ! method_exists( $order, 'get_items' ) ) {
+			return $result;
+		}
+
+		$digital_consent = 'yes' === $order->get_meta( '_trece_wdeu_consent_digital_content_accepted' );
+		$service_consent = 'yes' === $order->get_meta( '_trece_wdeu_consent_service_early_accepted' );
+
+		foreach ( $order->get_items() as $item ) {
+			$product = $item->get_product();
+			if ( ! $product ) {
+				continue;
+			}
+
+			$status = self::get_product_withdrawal_status( $product->get_id() );
+			$name   = $item->get_name();
+
+			$excluded = false;
+
+			if ( 'other_article16' === $status ) {
+				$excluded = true;
+			} elseif ( 'service_early' === $status ) {
+				$excluded = $service_consent;
+			} elseif ( 'digital_content' === $status && $digital_consent ) {
+				// Right is lost only once performance (download) has begun.
+				$excluded = $product->is_downloadable()
+					? self::get_download_count( $order, $product->get_id() ) > 0
+					: true;
+			}
+
+			$result[ $excluded ? 'excluded' : 'withdrawable' ][] = $name;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Number of times a downloadable product was downloaded for an order.
+	 *
+	 * @param WC_Order $order      Order object.
+	 * @param int      $product_id Product / variation ID.
+	 *
+	 * @return int
+	 */
+	public static function get_download_count( $order, $product_id ) {
+
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'woocommerce_downloadable_product_permissions';
+
+		$count = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$wpdb->prepare(
+				"SELECT SUM(download_count) FROM {$table} WHERE order_id = %d AND product_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$order->get_id(),
+				$product_id
+			)
+		);
+
+		return absint( $count );
+	}
+
+	/**
 	 * Resolve withdrawal status from a category, walking up ancestor terms.
 	 *
 	 * @param int $term_id Term ID to start from.

@@ -196,7 +196,14 @@ class Trece_WDEU_CPT {
 		$scope          = isset( $data['scope'] ) && in_array( $data['scope'], self::$valid_scopes, true )
 			? $data['scope']
 			: 'full';
-		$products       = isset( $data['products'] ) && is_array( $data['products'] ) ? $data['products'] : array();
+		if ( isset( $data['products'] ) && is_array( $data['products'] ) ) {
+			$products = $data['products'];
+		} elseif ( ! empty( $data['products'] ) ) {
+			// Free-text fallback (e.g. non-WooCommerce textarea): split by lines.
+			$products = array_values( array_filter( array_map( 'trim', explode( "\n", (string) $data['products'] ) ) ) );
+		} else {
+			$products = array();
+		}
 		$wc_order_id    = isset( $data['wc_order_id'] ) ? absint( $data['wc_order_id'] ) : 0;
 		$excluded_items = isset( $data['excluded_items'] ) && is_array( $data['excluded_items'] ) ? $data['excluded_items'] : array();
 
@@ -250,6 +257,15 @@ class Trece_WDEU_CPT {
 
 		$receipt_hash = self::calculate_receipt_hash( $hash_data );
 		update_post_meta( $post_id, '_trece_wdeu_receipt_hash', $receipt_hash );
+
+		// Audit trail: record submission.
+		self::add_log(
+			$post_id,
+			__( 'Withdrawal request submitted.', 'trece-withdrawal-eu' ),
+			'request_created',
+			is_user_logged_in() ? 'customer' : 'guest',
+			array( 'ip' => self::get_client_ip() )
+		);
 
 		/**
 		 * Fires after a new withdrawal request has been created.
@@ -313,6 +329,20 @@ class Trece_WDEU_CPT {
 		 */
 		do_action( 'trece_wdeu_status_changed', $post_id, $new_status, $old_status );
 
+		// Audit trail: record the status change.
+		self::add_log(
+			$post_id,
+			sprintf(
+				/* translators: 1: old status, 2: new status */
+				__( 'Status changed from "%1$s" to "%2$s".', 'trece-withdrawal-eu' ),
+				$old_status ? $old_status : 'pending',
+				$new_status
+			),
+			'status_' . $new_status,
+			'admin',
+			'' !== $comment ? array( 'comment' => $comment ) : array()
+		);
+
 		// Add WooCommerce order note if linked.
 		$wc_order_id = absint( get_post_meta( $post_id, '_trece_wdeu_wc_order_id', true ) );
 
@@ -361,23 +391,25 @@ class Trece_WDEU_CPT {
 
 		$result = array(
 			'ID'         => $post_id,
+			'id'         => $post_id,
 			'post_title' => $post->post_title,
 		);
 
 		foreach ( array_keys( self::$meta_keys ) as $meta_key ) {
-			// Strip leading underscore for a friendlier key.
-			$short_key            = ltrim( $meta_key, '_' );
+			// Strip the full `_trece_wdeu_` prefix for a friendlier key
+			// (e.g. customer_name, products) used by templates and emails.
+			$short_key            = preg_replace( '/^_trece_wdeu_/', '', $meta_key );
 			$value                = get_post_meta( $post_id, $meta_key, true );
 			$result[ $short_key ] = $value;
 		}
 
 		// Decode JSON fields.
-		if ( isset( $result['trece_wdeu_products'] ) && is_string( $result['trece_wdeu_products'] ) ) {
-			$result['trece_wdeu_products'] = json_decode( $result['trece_wdeu_products'], true );
+		if ( isset( $result['products'] ) && is_string( $result['products'] ) ) {
+			$result['products'] = json_decode( $result['products'], true );
 		}
 
-		if ( isset( $result['trece_wdeu_excluded_items'] ) && is_string( $result['trece_wdeu_excluded_items'] ) ) {
-			$result['trece_wdeu_excluded_items'] = json_decode( $result['trece_wdeu_excluded_items'], true );
+		if ( isset( $result['excluded_items'] ) && is_string( $result['excluded_items'] ) ) {
+			$result['excluded_items'] = json_decode( $result['excluded_items'], true );
 		}
 
 		return $result;
@@ -438,6 +470,62 @@ class Trece_WDEU_CPT {
 		);
 
 		return ! empty( $query->posts ) ? $query->posts[0] : false;
+	}
+
+	/*
+	|----------------------------------------------------------------------
+	| Activity Log (audit trail)
+	|----------------------------------------------------------------------
+	*/
+
+	/**
+	 * Append an event to a withdrawal request's activity log.
+	 *
+	 * @param int    $post_id Withdrawal post ID.
+	 * @param string $message Human-readable event message.
+	 * @param string $type    Event type slug (request_created, status_*, ...).
+	 * @param string $actor   Who triggered it (customer|guest|admin|system).
+	 * @param array  $payload Optional structured data (e.g. ip, comment).
+	 *
+	 * @return void
+	 */
+	public static function add_log( $post_id, $message, $type = 'info', $actor = 'system', $payload = array() ) {
+
+		$post_id = absint( $post_id );
+
+		if ( ! $post_id ) {
+			return;
+		}
+
+		$logs = get_post_meta( $post_id, '_trece_wdeu_logs', true );
+
+		if ( ! is_array( $logs ) ) {
+			$logs = array();
+		}
+
+		$logs[] = array(
+			'timestamp' => current_time( 'mysql', true ),
+			'type'      => sanitize_key( $type ),
+			'actor'     => sanitize_key( $actor ),
+			'message'   => wp_strip_all_tags( $message ),
+			'payload'   => is_array( $payload ) ? $payload : array(),
+		);
+
+		update_post_meta( $post_id, '_trece_wdeu_logs', $logs );
+	}
+
+	/**
+	 * Retrieve a withdrawal request's activity log (chronological).
+	 *
+	 * @param int $post_id Withdrawal post ID.
+	 *
+	 * @return array[]
+	 */
+	public static function get_logs( $post_id ) {
+
+		$logs = get_post_meta( absint( $post_id ), '_trece_wdeu_logs', true );
+
+		return is_array( $logs ) ? $logs : array();
 	}
 
 	/*

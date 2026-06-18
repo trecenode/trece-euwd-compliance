@@ -54,7 +54,9 @@ class Trece_WDEU_WC_MyAccount {
 		$eligible_statuses = array_map( 'sanitize_text_field', (array) $settings['eligible_statuses'] );
 
 		if ( in_array( $order->get_status(), $eligible_statuses, true ) ) {
-			if ( $this->is_deadline_open( $order, $settings ) && $this->has_withdrawable_items( $order ) ) {
+			if ( $this->is_deadline_open( $order, $settings )
+				&& $this->has_withdrawable_items( $order )
+				&& Trece_WDEU_WC_Checkout::country_in_scope( $order->get_billing_country() ) ) {
 				$withdrawal_status = $this->get_order_withdrawal_status( $order->get_id() );
 				
 				if ( ! $withdrawal_status ) {
@@ -198,8 +200,10 @@ class Trece_WDEU_WC_MyAccount {
 		foreach ( $orders as $order ) {
 			$order_id = $order->get_id();
 
-			// Deadline calculation & item eligibility.
-			$deadline_open = $this->is_deadline_open( $order, $settings ) && $this->has_withdrawable_items( $order );
+			// Deadline calculation, item eligibility & country applicability.
+			$deadline_open = $this->is_deadline_open( $order, $settings )
+				&& $this->has_withdrawable_items( $order )
+				&& Trece_WDEU_WC_Checkout::country_in_scope( $order->get_billing_country() );
 
 			// Check for existing withdrawal request.
 			$withdrawal_status = $this->get_order_withdrawal_status( $order_id );
@@ -316,36 +320,9 @@ class Trece_WDEU_WC_MyAccount {
 	 */
 	private function has_withdrawable_items( $order ) {
 
-		$items = $order->get_items();
-		if ( empty( $items ) ) {
-			return false;
-		}
+		$classified = Trece_WDEU_WC_Product::classify_order_items( $order );
 
-		$digital_consent = $order->get_meta( '_trece_wdeu_consent_digital_content_accepted' );
-		$service_consent = $order->get_meta( '_trece_wdeu_consent_service_early_accepted' );
-
-		foreach ( $items as $item ) {
-			$product = $item->get_product();
-			if ( ! $product ) {
-				continue;
-			}
-
-			$status = Trece_WDEU_WC_Product::get_product_withdrawal_status( $product->get_id() );
-
-			if ( 'standard' === $status ) {
-				return true;
-			}
-
-			if ( 'digital_content' === $status && 'yes' !== $digital_consent ) {
-				return true;
-			}
-
-			if ( 'service_early' === $status && 'yes' !== $service_consent ) {
-				return true;
-			}
-		}
-
-		return false;
+		return ! empty( $classified['withdrawable'] );
 	}
 
 	/**

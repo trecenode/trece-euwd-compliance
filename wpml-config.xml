@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wpml-config>
+
+	<!--
+		Admin texts (WPML String Translation → "Strings in the admin texts").
+		All plugin settings live in a single serialized option, so the
+		translatable strings are declared as nested keys of that option.
+	-->
+	<admin-texts>
+		<key name="trece_wdeu_settings">
+			<key name="consent_digital_text" />
+			<key name="consent_service_text" />
+			<key name="excluded_notice_other_title" />
+			<key name="excluded_notice_other_body" />
+		</key>
+	</admin-texts>
+
+	<!--
+		Product-level withdrawal status: copy to translations so a translated
+		product keeps the same status as the original.
+	-->
+	<custom-fields>
+		<custom-field action="copy">_trece_wdeu_withdrawal_status</custom-field>
+	</custom-fields>
+
+	<!-- Category-level withdrawal status: copy to term translations. -->
+	<custom-term-fields>
+		<custom-term-field action="copy">_trece_wdeu_withdrawal_status</custom-term-field>
+	</custom-term-fields>
+
+	<!-- Internal request records are not translatable content. -->
+	<custom-types>
+		<custom-type translate="0">trece_withdrawal</custom-type>
+	</custom-types>
+
+</wpml-config>

@@ -1,6 +1,6 @@
 # Withdrawal EU Law Wordpress Plugin
 
-**Version:** 1.0.0
+**Version:** 1.3.0
 **Author:** [13Node](https://13node.com)
 **License:** GPL v2 or later
 **Text Domain:** `trece-withdrawal-eu`
@@ -621,21 +621,7 @@ All CSS classes are prefixed with `trece-wdeu-` to avoid conflicts. Key classes 
 
 ## Changelog
 
-### 1.0.0
-
-*Initial release.*
-
-- Two-step withdrawal form with Annex I.B model form.
-- SHA-256 receipt hashing for tamper-proof confirmation.
-- Checkout consent checkboxes for digital content (Art. 16(m)) and services (Art. 14(4)(a)).
-- Product exclusion system with category inheritance under Art. 16.
-- Full admin management panel with withdrawal request list and detail views.
-- Email notifications to admin and customer.
-- WooCommerce and standalone mode support.
-- HPOS (High-Performance Order Storage) compatible.
-- GDPR-compliant data handling.
-- Spanish (es_ES) translation included.
-- 7 filters and 3 actions for developer customisation.
+Read all the changes in [CHANGELOG.md](CHANGELOG.md)
 
 # License
 

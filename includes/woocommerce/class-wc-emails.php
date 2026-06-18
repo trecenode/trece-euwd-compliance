@@ -95,6 +95,12 @@ class Trece_WDEU_WC_Emails {
 			return;
 		}
 
+		// Respect country applicability.
+		if ( class_exists( 'Trece_WDEU_WC_Checkout' )
+			&& ! Trece_WDEU_WC_Checkout::country_in_scope( $order->get_billing_country() ) ) {
+			return;
+		}
+
 		// Build the withdrawal form URL.
 		$page_id = absint( $settings['withdrawal_page_id'] );
 
@@ -102,11 +108,16 @@ class Trece_WDEU_WC_Emails {
 			return;
 		}
 
-		$withdrawal_url = add_query_arg(
-			'order_number',
-			$order->get_order_number(),
-			get_permalink( $page_id )
-		);
+		$args = array( 'order_number' => $order->get_order_number() );
+
+		// Guest orders: append a one-click tokenized auto-start link so the
+		// customer reaches the review step without re-entering order details.
+		if ( ! $order->get_customer_id() ) {
+			$args['auto_withdraw'] = 1;
+			$args['token']         = self::get_guest_token( $order );
+		}
+
+		$withdrawal_url = add_query_arg( $args, get_permalink( $page_id ) );
 
 		if ( $plain_text ) {
 			$this->render_plain_text_notice( $withdrawal_url, $order );
@@ -194,6 +205,29 @@ class Trece_WDEU_WC_Emails {
 	/* ------------------------------------------------------------------
 	 * Helpers
 	 * ----------------------------------------------------------------*/
+
+	/**
+	 * Get (or lazily create) a per-order guest access token.
+	 *
+	 * Authenticates a guest who received the order email so they can start a
+	 * withdrawal request without an account, validated via hash_equals().
+	 *
+	 * @param WC_Order $order Order object.
+	 *
+	 * @return string Token.
+	 */
+	public static function get_guest_token( $order ) {
+
+		$token = $order->get_meta( '_trece_wdeu_guest_token', true );
+
+		if ( ! $token ) {
+			$token = wp_generate_password( 48, false, false );
+			$order->update_meta_data( '_trece_wdeu_guest_token', $token );
+			$order->save();
+		}
+
+		return $token;
+	}
 
 	/**
 	 * Convert eligible order statuses to WC email IDs.

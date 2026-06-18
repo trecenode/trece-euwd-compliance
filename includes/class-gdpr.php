@@ -26,9 +26,14 @@ class Trece_WDEU_GDPR {
 
     public static function exporter_callback($email_address, $page = 1) {
         $export_items = [];
-        $withdrawals = Trece_WDEU_CPT::get_withdrawals_by_email($email_address);
+        // get_withdrawals_by_email() returns an array of post IDs.
+        $ids = Trece_WDEU_CPT::get_withdrawals_by_email($email_address);
 
-        foreach ($withdrawals as $w) {
+        foreach ($ids as $id) {
+            $w = Trece_WDEU_CPT::get_withdrawal($id);
+            if (!$w) {
+                continue;
+            }
             $data = [
                 ['name' => __('Request ID', 'trece-withdrawal-eu'), 'value' => $w['id']],
                 ['name' => __('Order', 'trece-withdrawal-eu'), 'value' => $w['order_number']],
@@ -39,7 +44,7 @@ class Trece_WDEU_GDPR {
             $export_items[] = [
                 'group_id' => 'trece_wdeu',
                 'group_label' => __('Withdrawal Requests', 'trece-withdrawal-eu'),
-                'item_id' => 'withdrawal-' . $w['id'],
+                'item_id' => 'withdrawal-' . $id,
                 'data' => $data,
             ];
         }
@@ -51,17 +56,29 @@ class Trece_WDEU_GDPR {
     }
 
     public static function eraser_callback($email_address, $page = 1) {
-        $withdrawals = Trece_WDEU_CPT::get_withdrawals_by_email($email_address);
+        $ids = Trece_WDEU_CPT::get_withdrawals_by_email($email_address);
         $items_removed = false;
         $items_retained = false;
         $messages = [];
 
-        foreach ($withdrawals as $w) {
-            $id = $w['id'];
+        foreach ($ids as $id) {
             update_post_meta($id, '_trece_wdeu_customer_name', 'Anonymized');
             update_post_meta($id, '_trece_wdeu_customer_email', 'deleted@anonymized.invalid');
             update_post_meta($id, '_trece_wdeu_ip_address', '');
             update_post_meta($id, '_trece_wdeu_user_agent', '');
+
+            // Redact IP addresses captured in the activity log.
+            $logs = Trece_WDEU_CPT::get_logs($id);
+            if (!empty($logs)) {
+                foreach ($logs as &$log) {
+                    if (!empty($log['payload']['ip'])) {
+                        $log['payload']['ip'] = '[erased]';
+                    }
+                }
+                unset($log);
+                update_post_meta($id, '_trece_wdeu_logs', $logs);
+            }
+
             $items_removed = true;
         }
 

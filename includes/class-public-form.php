@@ -34,26 +34,24 @@ class Trece_WDEU_Public_Form {
 			
 			include TRECE_WDEU_PATH . 'templates/public-form-success.php';
 		} else {
-            // Auto-withdraw fast path for logged-in users
-            if ( isset( $_GET['auto_withdraw'] ) && $_GET['auto_withdraw'] == '1' && is_user_logged_in() && $step === 1 && empty($errors) ) {
+            // Auto-withdraw fast path for logged-in customers and tokenized guests.
+            if ( isset( $_GET['auto_withdraw'] ) && $_GET['auto_withdraw'] == '1' && $step === 1 && empty($errors) ) {
                 $order_number = sanitize_text_field( $_GET['order_number'] ?? '' );
+                $guest_token  = isset( $_GET['token'] ) ? sanitize_text_field( wp_unslash( $_GET['token'] ) ) : '';
                 if ( $order_number ) {
-                    $order_id = apply_filters( 'trece_wdeu_resolve_order_number', 0, $order_number );
-                    if ( ! $order_id ) {
-                        $orders = wc_get_orders( ['limit' => 1, 'meta_key' => '_order_number', 'meta_value' => $order_number] );
-                        $order = !empty($orders) ? $orders[0] : wc_get_order($order_number);
-                    } else {
-                        $order = wc_get_order($order_id);
-                    }
+                    $order = self::resolve_order( $order_number );
 
-                    if ( $order && $order->get_customer_id() == get_current_user_id() ) {
+                    if ( $order && self::can_auto_withdraw( $order, $guest_token ) ) {
+                        $classified = Trece_WDEU_WC_Product::classify_order_items( $order );
+
                         $data = [
                             'customer_name'  => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
                             'customer_email' => $order->get_billing_email(),
                             'order_number'   => $order_number,
                             'order_date'     => $order->get_date_created() ? $order->get_date_created()->date('Y-m-d') : '',
-                            'scope'          => 'full',
-                            'products'       => '',
+                            'scope'          => empty( $classified['excluded'] ) ? 'full' : 'partial',
+                            'products'       => $classified['withdrawable'],
+                            'excluded_items' => $classified['excluded'],
                         ];
                         
                         $token = wp_generate_password( 32, false );
@@ -75,6 +73,19 @@ class Trece_WDEU_Public_Form {
                         'scope'          => sanitize_text_field( $_POST['scope'] ?? 'full' ),
                         'products'       => sanitize_textarea_field( $_POST['products'] ?? '' ),
                     ];
+
+                    // For WooCommerce orders, replace the free-text products with
+                    // the actual order lines classified into withdrawable/excluded.
+                    if ( Trece_WDEU_Plugin::instance()->is_woocommerce_active() && ! empty( $data['order_number'] ) ) {
+                        $order = self::resolve_order( $data['order_number'] );
+                        if ( $order ) {
+                            $classified = Trece_WDEU_WC_Product::classify_order_items( $order );
+                            $data['products']       = $classified['withdrawable'];
+                            $data['excluded_items'] = $classified['excluded'];
+                            $data['scope']          = empty( $classified['excluded'] ) ? 'full' : 'partial';
+                        }
+                    }
+
                     $token = wp_generate_password( 32, false );
                     set_transient( 'trece_wdeu_token_' . $token, $data, 15 * MINUTE_IN_SECONDS );
                 }
@@ -93,6 +104,59 @@ class Trece_WDEU_Public_Form {
 		}
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Resolve a WooCommerce order from an order number / reference.
+	 *
+	 * @param string $order_number Order number or free-text reference.
+	 *
+	 * @return WC_Order|null Order object, or null if not found / WC inactive.
+	 */
+	private static function resolve_order( $order_number ) {
+		if ( empty( $order_number ) || ! function_exists( 'wc_get_order' ) ) {
+			return null;
+		}
+
+		$order_id = apply_filters( 'trece_wdeu_resolve_order_number', 0, $order_number );
+		if ( $order_id ) {
+			return wc_get_order( $order_id ) ?: null;
+		}
+
+		$orders = wc_get_orders( [ 'limit' => 1, 'meta_key' => '_order_number', 'meta_value' => $order_number ] );
+		if ( ! empty( $orders ) ) {
+			return $orders[0];
+		}
+
+		return wc_get_order( $order_number ) ?: null;
+	}
+
+	/**
+	 * Whether the current visitor may auto-start a withdrawal for an order.
+	 *
+	 * Logged-in customers must own the order; guests must present the order's
+	 * tokenized email link (validated via hash_equals).
+	 *
+	 * @param WC_Order $order       Order object.
+	 * @param string   $guest_token Token from the email link (guests only).
+	 *
+	 * @return bool
+	 */
+	private static function can_auto_withdraw( $order, $guest_token ) {
+
+		$customer_id = (int) $order->get_customer_id();
+
+		if ( $customer_id ) {
+			return is_user_logged_in() && $customer_id === get_current_user_id();
+		}
+
+		if ( '' === $guest_token ) {
+			return false;
+		}
+
+		$stored = (string) $order->get_meta( '_trece_wdeu_guest_token', true );
+
+		return '' !== $stored && hash_equals( $stored, $guest_token );
 	}
 
 	public static function handle_submission() {
@@ -139,25 +203,12 @@ class Trece_WDEU_Public_Form {
 					$order_number = sanitize_text_field( $_POST['order_number'] );
 					$email        = sanitize_email( $_POST['customer_email'] );
 					
-					// Resolve order
-					$order_id = apply_filters( 'trece_wdeu_resolve_order_number', 0, $order_number );
-					if ( ! $order_id ) {
-						$orders = wc_get_orders( [
-							'limit'      => 1,
-							'meta_key'   => '_order_number',
-							'meta_value' => $order_number,
-						] );
-						if ( ! empty( $orders ) ) {
-							$order = $orders[0];
-						} else {
-							$order = wc_get_order( $order_number );
-						}
-					} else {
-						$order = wc_get_order( $order_id );
-					}
+					$order = self::resolve_order( $order_number );
 
 					if ( ! $order || strtolower( $order->get_billing_email() ) !== strtolower( $email ) ) {
 						$errors[] = __( 'The email address does not match the order.', 'trece-withdrawal-eu' );
+					} elseif ( class_exists( 'Trece_WDEU_WC_Checkout' ) && ! Trece_WDEU_WC_Checkout::country_in_scope( $order->get_billing_country() ) ) {
+						$errors[] = __( 'Withdrawal requests are not available for this order.', 'trece-withdrawal-eu' );
 					} else {
 						// Check deadline
 						$settings = Trece_WDEU_Plugin::instance()->get_settings();
@@ -188,6 +239,9 @@ class Trece_WDEU_Public_Form {
 				set_transient( 'trece_wdeu_errors_' . session_id(), $errors, 60 );
 				// Let the form re-render with errors
 				$_POST['trece_wdeu_step'] = 1;
+			} else {
+				// Step 1 valid → advance to the review step on render.
+				$_POST['trece_wdeu_step'] = 2;
 			}
 
 		} elseif ( $step === 2 ) {
@@ -204,28 +258,33 @@ class Trece_WDEU_Public_Form {
 
 			delete_transient( 'trece_wdeu_token_' . $token );
 
-			// Determine WC order ID if applicable
-			$wc_order_id = 0;
-			if ( Trece_WDEU_Plugin::instance()->is_woocommerce_active() && ! empty( $data['order_number'] ) ) {
-				$order_id_resolved = apply_filters( 'trece_wdeu_resolve_order_number', 0, $data['order_number'] );
-				if ( $order_id_resolved ) {
-					$wc_order_id = $order_id_resolved;
-				} else {
-					$orders = wc_get_orders( [
-						'limit'      => 1,
-						'meta_key'   => '_order_number',
-						'meta_value' => $data['order_number'],
-					] );
-					if ( ! empty( $orders ) ) {
-						$wc_order_id = $orders[0]->get_id();
-					} else {
-						$order = wc_get_order( $data['order_number'] );
-						if ( $order ) {
-							$wc_order_id = $order->get_id();
-						}
-					}
-				}
+			// If the order's lines were classified (structured products array),
+			// honour the customer's per-line selection from the review step.
+			// The selection is intersected with the withdrawable lines stored in
+			// the token so an excluded item can never be smuggled back in.
+			if ( isset( $data['products'] ) && is_array( $data['products'] ) ) {
+				$withdrawable = $data['products']; // Full set of eligible lines from the token.
+				$excluded     = isset( $data['excluded_items'] ) && is_array( $data['excluded_items'] ) ? $data['excluded_items'] : array();
+
+				$selected = isset( $_POST['withdraw_items'] ) && is_array( $_POST['withdraw_items'] )
+					? array_map( 'sanitize_text_field', wp_unslash( $_POST['withdraw_items'] ) )
+					: array();
+
+				// Intersect with eligible lines so excluded items can't be added.
+				// No selection posted → withdraw all eligible lines.
+				$data['products'] = empty( $selected )
+					? $withdrawable
+					: array_values( array_intersect( $withdrawable, $selected ) );
+
+				// Full only when nothing is excluded and every eligible line is withdrawn.
+				$data['scope'] = ( empty( $excluded ) && count( $data['products'] ) === count( $withdrawable ) )
+					? 'full'
+					: 'partial';
 			}
+
+			// Determine the linked WooCommerce order, if any.
+			$order       = Trece_WDEU_Plugin::instance()->is_woocommerce_active() ? self::resolve_order( $data['order_number'] ?? '' ) : null;
+			$wc_order_id = $order ? $order->get_id() : 0;
 
 			$submitted_at = current_time( 'mysql', true );
 			

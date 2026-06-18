@@ -46,7 +46,7 @@ class Trece_WDEU_Email_Service {
         wp_mail($to, $subject, $message, $headers);
     }
 
-    public static function send_status_change_email($withdrawal_id, $new_status, $comment = '') {
+    public static function send_status_change($withdrawal_id, $new_status, $comment = '') {
         $withdrawal = Trece_WDEU_CPT::get_withdrawal($withdrawal_id);
         if (!$withdrawal) return;
 

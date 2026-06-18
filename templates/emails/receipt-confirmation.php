@@ -18,9 +18,13 @@
 
 <?php esc_html_e('Scope', 'trece-withdrawal-eu'); ?>: <?php echo esc_html($withdrawal['scope']); ?>
 
-<?php if ($withdrawal['scope'] === 'partial') : ?>
+<?php if ($withdrawal['scope'] === 'partial' && !empty($withdrawal['products'])) : ?>
 <?php esc_html_e('Products affected', 'trece-withdrawal-eu'); ?>:
-<?php echo esc_html($withdrawal['products']); ?>
+<?php echo esc_html(is_array($withdrawal['products']) ? implode(', ', $withdrawal['products']) : $withdrawal['products']); ?>
+<?php endif; ?>
+<?php if (!empty($withdrawal['excluded_items'])) : ?>
+<?php esc_html_e('Excluded from withdrawal (Art. 16)', 'trece-withdrawal-eu'); ?>:
+<?php echo esc_html(is_array($withdrawal['excluded_items']) ? implode(', ', $withdrawal['excluded_items']) : $withdrawal['excluded_items']); ?>
 <?php endif; ?>
 
 ------------------------------------------------------

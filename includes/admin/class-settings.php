@@ -147,6 +147,7 @@ class Trece_WDEU_Settings {
 
 		// ── Sections ───────────────────────────────────────────────────
 		$this->add_section( 'general', __( 'General', 'trece-withdrawal-eu' ) );
+		$this->add_section( 'applicability', __( 'Applicability (Country)', 'trece-withdrawal-eu' ) );
 		$this->add_section( 'deadline', __( 'Deadline', 'trece-withdrawal-eu' ) );
 		$this->add_section( 'checkout_consents', __( 'Checkout Consents', 'trece-withdrawal-eu' ) );
 		$this->add_section( 'excluded_notices', __( 'Excluded Notices', 'trece-withdrawal-eu' ) );
@@ -156,6 +157,10 @@ class Trece_WDEU_Settings {
 
 		// ── General ────────────────────────────────────────────────────
 		$this->add_field( 'general', 'withdrawal_page_id', __( 'Withdrawal Page [MANDATORY]', 'trece-withdrawal-eu' ), 'render_page_dropdown' );
+
+		// ── Applicability ──────────────────────────────────────────────
+		$this->add_field( 'applicability', 'use_billing_country', __( 'Restrict by billing country [OPTIONAL]', 'trece-withdrawal-eu' ), 'render_checkbox_field' );
+		$this->add_field( 'applicability', 'allowed_countries', __( 'Allowed countries [OPTIONAL]', 'trece-withdrawal-eu' ), 'render_countries_field' );
 
 		// ── Deadline ───────────────────────────────────────────────────
 		$this->add_field( 'deadline', 'deadline_days', __( 'Deadline Days [MANDATORY]', 'trece-withdrawal-eu' ), 'render_number_field' );
@@ -433,6 +438,50 @@ class Trece_WDEU_Settings {
 		echo '</fieldset>';
 	}
 
+	/**
+	 * Render the allowed-countries multiple select.
+	 *
+	 * Defaults to the EU countries enabled in WooCommerce when nothing is saved.
+	 *
+	 * @param array $args Field arguments containing 'field' key.
+	 *
+	 * @return void
+	 */
+	public function render_countries_field( $args ) {
+
+		if ( ! function_exists( 'WC' ) || ! WC()->countries ) {
+			echo '<p class="description">' . esc_html__( 'WooCommerce is required for country restrictions.', 'trece-withdrawal-eu' ) . '</p>';
+			return;
+		}
+
+		$selected = $this->get_field_value( $args['field'] );
+
+		if ( ! is_array( $selected ) || empty( $selected ) ) {
+			$enabled  = WC()->countries->get_allowed_countries();
+			$selected = array_intersect( array_keys( $enabled ), WC()->countries->get_european_union_countries() );
+		}
+
+		$countries = WC()->countries->get_countries();
+
+		printf(
+			'<select multiple size="10" id="%1$s" name="%2$s[%1$s][]" class="wc-enhanced-select" style="min-width:350px;">',
+			esc_attr( $args['field'] ),
+			esc_attr( self::OPTION_NAME )
+		);
+
+		foreach ( $countries as $code => $name ) {
+			printf(
+				'<option value="%1$s" %2$s>%3$s</option>',
+				esc_attr( $code ),
+				selected( in_array( $code, (array) $selected, true ), true, false ),
+				esc_html( $name )
+			);
+		}
+
+		echo '</select>';
+		echo '<p class="description">' . esc_html__( 'Only orders billed to these countries are offered the withdrawal flow. Takes effect only when "Restrict by billing country" is enabled.', 'trece-withdrawal-eu' ) . '</p>';
+	}
+
 	/*
 	|----------------------------------------------------------------------
 	| Sanitisation
@@ -452,6 +501,15 @@ class Trece_WDEU_Settings {
 
 		// ── General ────────────────────────────────────────────────────
 		$clean['withdrawal_page_id'] = isset( $input['withdrawal_page_id'] ) ? absint( $input['withdrawal_page_id'] ) : 0;
+
+		// ── Applicability ──────────────────────────────────────────────
+		$clean['use_billing_country'] = ! empty( $input['use_billing_country'] );
+
+		if ( isset( $input['allowed_countries'] ) && is_array( $input['allowed_countries'] ) ) {
+			$clean['allowed_countries'] = array_values( array_map( 'sanitize_text_field', $input['allowed_countries'] ) );
+		} else {
+			$clean['allowed_countries'] = array();
+		}
 
 		// ── Deadline ───────────────────────────────────────────────────
 		$clean['deadline_days'] = isset( $input['deadline_days'] ) ? absint( $input['deadline_days'] ) : 14;

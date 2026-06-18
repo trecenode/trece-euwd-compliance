@@ -25,12 +25,39 @@
 
         <dt><?php esc_html_e( 'Scope', 'trece-withdrawal-eu' ); ?></dt>
         <dd><?php echo esc_html( $data['scope'] === 'full' ? __( 'Full order', 'trece-withdrawal-eu' ) : __( 'Partial order', 'trece-withdrawal-eu' ) ); ?></dd>
+    </dl>
 
-        <?php if ( $data['scope'] === 'partial' ) : ?>
+    <?php if ( is_array( $data['products'] ) ) : // Structured line items (WooCommerce order). ?>
+
+        <?php if ( ! empty( $data['products'] ) ) : ?>
+            <fieldset class="trece-wdeu-field">
+                <legend><?php esc_html_e( 'Items to withdraw', 'trece-withdrawal-eu' ); ?></legend>
+                <?php foreach ( $data['products'] as $item_name ) : ?>
+                    <label style="display:block;">
+                        <input type="checkbox" name="withdraw_items[]" value="<?php echo esc_attr( $item_name ); ?>" checked>
+                        <?php echo esc_html( $item_name ); ?>
+                    </label>
+                <?php endforeach; ?>
+            </fieldset>
+        <?php endif; ?>
+
+        <?php if ( ! empty( $data['excluded_items'] ) && is_array( $data['excluded_items'] ) ) : ?>
+            <div class="trece-wdeu-field">
+                <strong><?php esc_html_e( 'Excluded from withdrawal (Art. 16)', 'trece-withdrawal-eu' ); ?></strong>
+                <ul>
+                    <?php foreach ( $data['excluded_items'] as $item_name ) : ?>
+                        <li><?php echo esc_html( $item_name ); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+    <?php elseif ( $data['scope'] === 'partial' && ! empty( $data['products'] ) ) : // Free-text fallback. ?>
+        <dl>
             <dt><?php esc_html_e( 'Products affected', 'trece-withdrawal-eu' ); ?></dt>
             <dd><?php echo nl2br( esc_html( $data['products'] ) ); ?></dd>
-        <?php endif; ?>
-    </dl>
+        </dl>
+    <?php endif; ?>
 
     <div style="margin-top: 2rem; display: flex; gap: 1rem;">
         <button type="submit" class="trece-wdeu-btn trece-wdeu-btn-primary">
