@@ -1,10 +1,13 @@
+# Translation template for Withdrawal EU Law plugin.
 # Copyright (C) 2026 13Node
 # This file is distributed under the same license as the Withdrawal EU Law plugin.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Withdrawal EU Law 1.0.0\n"
+"Project-Id-Version: Withdrawal EU Law 1.3.0\n"
 "Report-Msgid-Bugs-To: https://13node.com/support\n"
-"POT-Creation-Date: 2026-05-30 00:00+0000\n"
+"POT-Creation-Date: 2026-06-19 00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,11 +17,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Antigravity\n"
 "X-Domain: trece-withdrawal-eu\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_html__;esc_html_e\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-SearchPath-0: .\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
 
 #. Plugin Name of the plugin
 #: trece-withdrawal-eu.php
@@ -27,7 +27,12 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: trece-withdrawal-eu.php
-msgid "https://13node.com"
+msgid "https://13node.com/plugins/withdrawal-eu-law"
+msgstr ""
+
+#. Description of the plugin
+#: trece-withdrawal-eu.php
+msgid "Implements the EU Directive 2023/2673 electronic withdrawal function for WooCommerce stores. Provides a compliant withdrawal button, consent management, and automated confirmation emails."
 msgstr ""
 
 #. Author of the plugin
@@ -35,354 +40,957 @@ msgstr ""
 msgid "13Node"
 msgstr ""
 
-#. Description of the plugin
+#. Author URI of the plugin
 #: trece-withdrawal-eu.php
-msgid "This plugin provides tools to help implement EU withdrawal rights. It does not constitute legal advice. Please consult a qualified legal professional to ensure full compliance with applicable regulations."
+msgid "https://13node.com"
 msgstr ""
 
-#: includes/admin/class-admin-menu.php
-msgid "Withdrawals"
+#: templates/myaccount-withdrawal.php:73
+#, php-format
+msgid "#%s"
 msgstr ""
 
-#: includes/admin/class-admin-menu.php
-msgid "All Requests"
+#: includes/admin/class-admin-log.php:272
+#, php-format
+msgid "%1$d request marked as %2$s."
+msgid_plural "%1$d requests marked as %2$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-admin-detail.php:96
+msgid "&larr; Back to All Requests"
 msgstr ""
 
-#: includes/admin/class-admin-menu.php
-msgid "Settings"
+#: templates/annex-form.php:4
+msgid "(Complete and return this form only if you wish to withdraw from the contract)"
 msgstr ""
 
-#: includes/admin/class-admin-menu.php
-msgid "Export Withdrawals"
+#: includes/admin/class-admin-detail.php:335
+msgid "A comment is required when rejecting a request and optional when completing."
 msgstr ""
 
-#: includes/frontend/class-my-account.php
-msgid "Right of withdrawal"
+#: includes/admin/class-admin-detail.php:564
+msgid "A comment is required when rejecting a withdrawal request."
 msgstr ""
 
-#: includes/frontend/class-form.php
-msgid "Continue to review"
+#: templates/emails/admin-notification.php:4
+#, php-format
+msgid "A new withdrawal request (#%d) has been submitted on %s."
 msgstr ""
 
-#: includes/frontend/class-form.php
-msgid "Confirm withdrawal"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Back"
-msgstr ""
-
-#: includes/admin/class-admin-request.php
-msgid "Update Status"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Full name"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Email address"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Order number"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Order date"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Scope"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Full order"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Partial order"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Products affected"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "I accept the privacy policy"
-msgstr ""
-
-#: includes/frontend/class-form.php
-msgid "Withdraw from contract here"
-msgstr ""
-
-#: includes/common/class-statuses.php
-msgid "Pending"
-msgstr ""
-
-#: includes/common/class-statuses.php
+#: includes/admin/class-admin-detail.php:474 includes/admin/class-admin-export.php:78 includes/woocommerce/class-wc-checkout.php:638
 msgid "Accepted"
 msgstr ""
 
-#: includes/common/class-statuses.php
-msgid "Rejected"
+#: templates/myaccount-withdrawal.php:106 templates/myaccount-withdrawal.php:60
+msgid "Action"
 msgstr ""
 
-#: includes/common/class-statuses.php
+#: includes/admin/class-admin-detail.php:248
+msgid "Activity Log"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:255
+msgid "Actor"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:111
+msgid "Add New"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:112
+msgid "Add New Withdrawal Request"
+msgstr ""
+
+#: templates/annex-form.php:26
+msgid "Address of consumer(s),"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:323 includes/admin/class-admin-detail.php:385
+msgid "Admin Comment"
+msgstr ""
+
+#: includes/admin/class-settings.php:187
+msgid "Admin Notification Email [MANDATORY]"
+msgstr ""
+
+#: includes/admin/class-settings.php:156
+msgid "Advanced"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:61 includes/admin/class-admin-log.php:62 includes/class-withdrawal-cpt.php:119
+msgid "All Requests"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:76 includes/admin/class-admin-log.php:140
+msgid "All statuses"
+msgstr ""
+
+#: includes/admin/class-settings.php:163
+msgid "Allowed countries [OPTIONAL]"
+msgstr ""
+
+#: includes/admin/class-settings.php:150
+msgid "Applicability (Country)"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:348
+msgid "Audit Trail"
+msgstr ""
+
+#: templates/public-form-step2.php:67
+msgid "Back to edit"
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:6
+msgid "Below is the complete content of your declaration:"
+msgstr ""
+
+#: includes/class-plugin.php:86
+msgid "Cannot unserialize singleton."
+msgstr ""
+
+#: includes/admin/class-settings.php:152
+msgid "Checkout Consents"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:457
+msgid "Checkout Consents (Durable Proof)"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:363
+#, php-format
+msgid "Comment: %s"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:80 includes/admin/class-settings.php:408
 msgid "Completed"
 msgstr ""
 
-#: includes/frontend/class-form-handler.php
-msgid "Your withdrawal request has been submitted successfully."
+#: includes/admin/class-settings.php:368
+msgid "Completion date"
 msgstr ""
 
-#: includes/frontend/class-form-handler.php
-msgid "Receipt hash (SHA-256):"
+#: templates/public-form-step2.php:64
+msgid "Confirm withdrawal"
 msgstr ""
 
-#: includes/frontend/class-form-handler.php
-msgid "The withdrawal period has expired for this order."
+#: includes/admin/class-admin-detail.php:465
+msgid "Consent Text"
 msgstr ""
 
-#: includes/frontend/class-form-handler.php
-msgid "The email address does not match the order."
+#: templates/public-form-step1.php:73
+msgid "Continue to review"
 msgstr ""
 
-#: includes/frontend/class-form-handler.php
-msgid "You must consent to the digital content terms to proceed."
+#: includes/admin/class-admin-detail.php:376
+msgid "Current Status"
 msgstr ""
 
-#: includes/frontend/class-my-account.php
-msgid "Withdraw"
+#: includes/admin/class-admin-detail.php:290
+msgid "Current status:"
 msgstr ""
 
-#: includes/frontend/class-my-account.php
-msgid "View request"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Withdrawal deadline (days)"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Default: 14 days as per EU directive"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Email notifications"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Send email to admin on new withdrawal request"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Send confirmation email to consumer"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Form page"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Select the page containing the withdrawal form shortcode"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Require order number"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Require the consumer to provide an order number"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Privacy policy page"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Select the privacy policy page to link in the form"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Trader information"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Company name, address, and contact details for the withdrawal form"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Enable checkout consents"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Show consent checkboxes for digital content and services at checkout"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Digital content consent text"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "I expressly consent to the provision of digital content and acknowledge that I lose my right of withdrawal."
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Service consent text"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "I expressly request that the service begins before the withdrawal period expires and acknowledge that I will lose my right of withdrawal once the service has been fully performed."
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Enable product exclusions"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Show exclusion notices on excluded product pages"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Excluded categories"
-msgstr ""
-
-#: includes/admin/class-settings.php
-msgid "Select product categories excluded from the right of withdrawal"
-msgstr ""
-
-#: includes/emails/class-email-admin-new.php
-#, php-format
-msgid "New withdrawal request #%s"
-msgstr ""
-
-#: includes/emails/class-email-consumer-confirmation.php
-msgid "Your withdrawal request has been received"
-msgstr ""
-
-#: includes/emails/class-email-consumer-status.php
-#, php-format
-msgid "Withdrawal request #%s status updated"
-msgstr ""
-
-#: includes/frontend/class-annex-form.php
-msgid "Model withdrawal form"
-msgstr ""
-
-#: includes/frontend/class-annex-form.php
-msgid "To:"
-msgstr ""
-
-#: includes/frontend/class-annex-form.php
-msgid "I/We hereby give notice that I/we withdraw from my/our contract of sale of the following goods/for the provision of the following service:"
-msgstr ""
-
-#: includes/frontend/class-annex-form.php
-msgid "Ordered on / received on:"
-msgstr ""
-
-#: includes/frontend/class-annex-form.php
-msgid "Name of consumer(s):"
-msgstr ""
-
-#: includes/frontend/class-annex-form.php
-msgid "Address of consumer(s):"
-msgstr ""
-
-#: includes/frontend/class-annex-form.php
-msgid "Signature of consumer(s) (only if this form is notified on paper):"
-msgstr ""
-
-#: includes/frontend/class-annex-form.php
-msgid "Date:"
-msgstr ""
-
-#: includes/frontend/class-my-account.php
-msgid "Withdrawal Requests"
-msgstr ""
-
-#: includes/frontend/class-my-account.php
-msgid "No withdrawal requests found."
-msgstr ""
-
-#: includes/frontend/class-my-account.php
-msgid "Request #"
-msgstr ""
-
-#: includes/frontend/class-my-account.php
-msgid "Date"
-msgstr ""
-
-#: includes/frontend/class-my-account.php
-#: includes/admin/class-admin-list.php
-msgid "Status"
-msgstr ""
-
-#: includes/frontend/class-my-account.php
-msgid "View"
-msgstr ""
-
-#: includes/admin/class-admin-list.php
-msgid "ID"
-msgstr ""
-
-#: includes/admin/class-admin-list.php
+#: includes/admin/class-admin-log.php:328
 msgid "Customer"
 msgstr ""
 
-#: includes/admin/class-admin-list.php
+#: includes/admin/class-admin-detail.php:110
+msgid "Customer Details"
+msgstr ""
+
+#: templates/emails/admin-notification.php:6
+msgid "Customer details:"
+msgstr ""
+
+#: templates/annex-form.php:34 templates/myaccount-withdrawal.php:51 templates/myaccount-withdrawal.php:80
+msgid "Date"
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:32
+msgid "Date and time of submission (UTC)"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:87
+msgid "Date From"
+msgstr ""
+
+#: includes/class-gdpr.php:40
+msgid "Date Submitted"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:97
+msgid "Date To"
+msgstr ""
+
+#: includes/admin/class-settings.php:151
+msgid "Deadline"
+msgstr ""
+
+#: includes/admin/class-settings.php:167
+msgid "Deadline Basis [RECOMMENDED]"
+msgstr ""
+
+#: includes/admin/class-settings.php:166
+msgid "Deadline Days [MANDATORY]"
+msgstr ""
+
+#: templates/myaccount-withdrawal.php:121
+msgid "Deadline expired"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:469
+msgid "Decision"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:478 includes/woocommerce/class-wc-checkout.php:639
+msgid "Declined"
+msgstr ""
+
+#: includes/woocommerce/class-wc-product.php:167 includes/woocommerce/class-wc-product.php:201
+msgid "Defines how the right of withdrawal applies to products in this category. Leave as \"Inherit from parent\" to use the parent category's value."
+msgstr ""
+
+#: includes/woocommerce/class-wc-product.php:96
+msgid "Defines how the right of withdrawal applies to this product under EU consumer law."
+msgstr ""
+
+#: templates/annex-form.php:38
+msgid "Delete as appropriate."
+msgstr ""
+
+#: includes/woocommerce/class-wc-product.php:67
+msgid "Digital content (Art. 16(m))"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:424
+msgid "Digital Content Consent"
+msgstr ""
+
+#: includes/woocommerce/class-wc-checkout.php:613
+msgid "Digital Content Consent (Art. 16(m))"
+msgstr ""
+
+#: includes/admin/class-settings.php:171
+msgid "Digital Content Consent Text [MANDATORY]"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:425
+msgid "Early Service Commencement Consent"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:113
+msgid "Edit Withdrawal Request"
+msgstr ""
+
+#: includes/admin/class-settings.php:191
+msgid "Eligible Order Statuses [RECOMMENDED]"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:119 includes/admin/class-admin-log.php:329 includes/admin/class-settings.php:155 templates/emails/admin-notification.php:10
 msgid "Email"
 msgstr ""
 
-#: includes/admin/class-admin-list.php
+#: templates/emails/receipt-confirmation.php:11 templates/public-form-step1.php:30 templates/public-form-step2.php:15
+msgid "Email address"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:361
+msgid "Email Sent"
+msgstr ""
+
+#: includes/admin/class-settings.php:331
+msgid "Enabled"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:254
+msgid "Event"
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:26 templates/public-form-step2.php:46
+msgid "Excluded from withdrawal (Art. 16)"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:225
+msgid "Excluded Items (Art. 16)"
+msgstr ""
+
+#: includes/admin/class-settings.php:153
+msgid "Excluded Notices"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:106
+msgid "Export to CSV"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:60
+msgid "Export Withdrawal Requests"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:44 includes/admin/class-admin-export.php:45
+msgid "Export Withdrawals"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:177
+msgid "Filter"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:155
+msgid "From"
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:9 templates/public-form-step1.php:25 templates/public-form-step2.php:12
+msgid "Full name"
+msgstr ""
+
+#: includes/class-public-form.php:186
+msgid "Full name is required."
+msgstr ""
+
+#: templates/public-form-step1.php:51 templates/public-form-step2.php:27
+msgid "Full order"
+msgstr ""
+
+#: includes/admin/class-settings.php:149
+msgid "General"
+msgstr ""
+
+#: includes/admin/class-settings.php:168
+msgid "Grace Days [OPTIONAL]"
+msgstr ""
+
+#: templates/emails/admin-notification.php:2 templates/emails/receipt-confirmation.php:2 templates/emails/status-change.php:2
+msgid "Hello,"
+msgstr ""
+
+#: templates/public-form-step1.php:68
+msgid "I accept the privacy policy"
+msgstr ""
+
+#: includes/class-plugin.php:306 includes/woocommerce/class-wc-checkout.php:142 includes/woocommerce/class-wc-checkout.php:62
+msgid "I consent to the immediate supply of digital content and acknowledge that I will lose my right of withdrawal."
+msgstr ""
+
+#: includes/class-plugin.php:310 includes/woocommerce/class-wc-checkout.php:143 includes/woocommerce/class-wc-checkout.php:63
+msgid "I request that the service begins during the withdrawal period and acknowledge that, should I withdraw, I will be liable for the proportionate cost of the service already provided."
+msgstr ""
+
+#: templates/annex-form.php:14
+msgid "I/We (*) hereby give notice that I/We (*) withdraw from my/our (*) contract of sale of the following goods (*)/for the provision of the following service (*),"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:327
+msgid "ID"
+msgstr ""
+
+#: includes/woocommerce/class-wc-product.php:73
+msgid "Inherit from parent"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:549
+msgid "Invalid status selected."
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:127 includes/admin/class-admin-detail.php:489
+msgid "IP Address"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:268 includes/woocommerce/class-wc-checkout.php:647
+msgid "IP:"
+msgstr ""
+
+#: templates/public-form-step2.php:34
+msgid "Items to withdraw"
+msgstr ""
+
+#: includes/admin/class-settings.php:217
+msgid "Legal Disclaimer"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:566
+msgid "Mark as Accepted"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:568
+msgid "Mark as Completed"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:567
+msgid "Mark as Rejected"
+msgstr ""
+
+#: templates/emails/status-change.php:11
+msgid "Message from the shop:"
+msgstr ""
+
+#: includes/class-annex-form.php:41
+msgid "Model withdrawal form"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:115 templates/emails/admin-notification.php:8
+msgid "Name"
+msgstr ""
+
+#: templates/annex-form.php:22
+msgid "Name of consumer(s),"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:305
+msgid "New Status"
+msgstr ""
+
+#: templates/emails/status-change.php:7
+msgid "New status:"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:114
+msgid "New Withdrawal Request"
+msgstr ""
+
+#: includes/class-email-service.php:35
+#, php-format
+msgid "New withdrawal request #%d — %s"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:370
+msgid "No"
+msgstr ""
+
+#: includes/admin/class-settings.php:121
+msgid "No requests found. Configure the plugin under Settings."
+msgstr ""
+
+#: includes/class-plugin.php:314
+msgid "No right of withdrawal"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:118
+msgid "No withdrawal requests found in Trash."
+msgstr ""
+
+#: includes/admin/class-admin-log.php:578 includes/class-withdrawal-cpt.php:117
+msgid "No withdrawal requests found."
+msgstr ""
+
+#: includes/admin/class-settings.php:407
+msgid "On hold"
+msgstr ""
+
+#: includes/admin/class-settings.php:482
+msgid "Only orders billed to these countries are offered the withdrawal flow. Takes effect only when \"Restrict by billing country\" is enabled."
+msgstr ""
+
+#: includes/admin/class-admin-log.php:330 includes/class-gdpr.php:39 templates/myaccount-withdrawal.php:48 templates/myaccount-withdrawal.php:69
 msgid "Order"
 msgstr ""
 
-#: includes/admin/class-admin-list.php
-msgid "Actions"
+#: includes/admin/class-admin-detail.php:165
+msgid "Order Date"
 msgstr ""
 
-#: includes/common/class-helpers.php
-msgid "N/A"
+#: includes/admin/class-settings.php:367 templates/emails/receipt-confirmation.php:17 templates/public-form-step1.php:42 templates/public-form-step2.php:23
+msgid "Order date"
 msgstr ""
 
-#: includes/common/class-helpers.php
-msgid "Guest"
+#: includes/class-public-form.php:192
+msgid "Order date is required."
 msgstr ""
 
-#: includes/admin/class-admin-request.php
-msgid "Withdrawal request created."
+#: templates/emails/admin-notification.php:13
+msgid "Order details:"
 msgstr ""
 
-#: includes/admin/class-admin-request.php
-msgid "Status updated successfully."
+#: includes/admin/class-admin-detail.php:146
+msgid "Order Number"
 msgstr ""
 
-#: includes/admin/class-admin-request.php
-msgid "Invalid request."
+#: templates/emails/admin-notification.php:15 templates/emails/receipt-confirmation.php:14 templates/public-form-step1.php:36 templates/public-form-step2.php:19
+msgid "Order number"
 msgstr ""
 
-#: includes/admin/class-settings.php
-msgid "Digital content"
+#: includes/class-public-form.php:201
+msgid "Order number is required."
 msgstr ""
 
-#: includes/admin/class-settings.php
-msgid "Service"
+#: templates/annex-form.php:18
+msgid "Ordered on (*)/received on (*),"
 msgstr ""
 
-#: includes/admin/class-settings.php
-msgid "Sealed goods"
+#: includes/woocommerce/class-wc-product.php:69
+msgid "Other Article 16 exception"
 msgstr ""
 
-#: includes/admin/class-settings.php
-msgid "Custom/personalized"
+#: includes/admin/class-settings.php:177
+msgid "Other Exclusion Notice Body [RECOMMENDED]"
 msgstr ""
 
-#: includes/admin/class-settings.php
-msgid "Perishable goods"
+#: includes/admin/class-settings.php:176
+msgid "Other Exclusion Notice Title [RECOMMENDED]"
 msgstr ""
 
-#: includes/admin/class-settings.php
-msgid "Other exclusion"
+#: templates/public-form-step1.php:55 templates/public-form-step2.php:27
+msgid "Partial order"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:77
+msgid "Pending"
+msgstr ""
+
+#: includes/admin/class-settings.php:405
+msgid "Pending payment"
+msgstr ""
+
+#: includes/class-annex-form.php:45
+msgid "Print Form"
+msgstr ""
+
+#: includes/admin/class-settings.php:406
+msgid "Processing"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:181
+msgid "Products Affected"
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:22 templates/public-form-step1.php:61 templates/public-form-step2.php:57
+msgid "Products affected"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:211 includes/admin/class-admin-log.php:333
+msgid "Receipt Hash"
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:34
+msgid "Receipt hash (SHA-256)"
+msgstr ""
+
+#: templates/public-form-success.php:8
+msgid "Receipt hash (SHA-256):"
+msgstr ""
+
+#: includes/admin/class-settings.php:409
+msgid "Refunded"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:79
+msgid "Rejected"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:141
+msgid "Request Details"
+msgstr ""
+
+#: includes/class-gdpr.php:38
+msgid "Request ID"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:80
+msgid "Requests per page"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:332
+msgid "Required when rejecting a request."
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:357
+msgid "Resolved"
+msgstr ""
+
+#: includes/admin/class-settings.php:162
+msgid "Restrict by billing country [OPTIONAL]"
+msgstr ""
+
+#: includes/woocommerce/class-wc-orders.php:160
+msgid "Review request"
+msgstr ""
+
+#: templates/public-form-step2.php:9
+msgid "Review your withdrawal request"
+msgstr ""
+
+#: includes/class-shortcodes.php:15 includes/woocommerce/class-wc-emails.php:153 includes/woocommerce/class-wc-emails.php:194
+msgid "Right of Withdrawal"
+msgstr ""
+
+#: includes/woocommerce/class-wc-myaccount.php:135 includes/woocommerce/class-wc-myaccount.php:143
+msgid "Right of withdrawal"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:177 includes/class-gdpr.php:41 templates/emails/admin-notification.php:17 templates/emails/receipt-confirmation.php:19 templates/public-form-step1.php:47 templates/public-form-step2.php:26
+msgid "Scope"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:116
+msgid "Search Withdrawal Requests"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:528 includes/admin/class-admin-export.php:136
+msgid "Security check failed."
+msgstr ""
+
+#: includes/woocommerce/class-wc-checkout.php:614
+msgid "Service Early Consent (Art. 14(4)(a))"
+msgstr ""
+
+#: includes/admin/class-settings.php:172
+msgid "Service Early Performance Consent Text [MANDATORY]"
+msgstr ""
+
+#: includes/woocommerce/class-wc-product.php:68
+msgid "Service started early (Art. 14(4)(a))"
+msgstr ""
+
+#: includes/class-public-form.php:256
+msgid "Session expired. Please try again."
+msgstr ""
+
+#: includes/admin/class-settings.php:93
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-settings.php:92
+msgid "Settings — Withdrawal EU Law"
+msgstr ""
+
+#: includes/admin/class-settings.php:175
+msgid "Show Exclusion Notice on Product Page [RECOMMENDED]"
+msgstr ""
+
+#: includes/admin/class-settings.php:188
+msgid "Show Withdrawal Link in Order Emails [RECOMMENDED]"
+msgstr ""
+
+#: templates/annex-form.php:30
+msgid "Signature of consumer(s) (only if this form is notified on paper),"
+msgstr ""
+
+#: includes/woocommerce/class-wc-product.php:66
+msgid "Standard (14-day right of withdrawal)"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:287 includes/admin/class-admin-export.php:71 includes/admin/class-admin-log.php:137 includes/admin/class-admin-log.php:332 includes/class-gdpr.php:42 templates/myaccount-withdrawal.php:54 templates/myaccount-withdrawal.php:88
+msgid "Status"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:596 includes/class-withdrawal-cpt.php:337
+#, php-format
+msgid "Status changed from \"%1$s\" to \"%2$s\"."
+msgstr ""
+
+#: includes/woocommerce/class-wc-checkout.php:645
+msgid "Status:"
+msgstr ""
+
+#: includes/woocommerce/class-wc-emails.php:171
+msgid "Submit a withdrawal request"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:353 includes/admin/class-admin-log.php:331
+msgid "Submitted"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:199
+msgid "Submitted At (UTC)"
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:43 templates/emails/status-change.php:17
+msgid "Thank you,"
+msgstr ""
+
+#: includes/class-public-form.php:209
+msgid "The email address does not match the order."
+msgstr ""
+
+#: includes/admin/class-admin-export.php:113
+msgid "The exported CSV includes all meta fields and is protected against spreadsheet formula injection."
+msgstr ""
+
+#: templates/emails/status-change.php:4
+#, php-format
+msgid "The status of your withdrawal request (#%d) has been updated."
+msgstr ""
+
+#: includes/class-public-form.php:229
+msgid "The withdrawal period has expired for this order."
+msgstr ""
+
+#: templates/public-form-success.php:10
+msgid "This cryptographic hash ensures the integrity of your request. A confirmation has been sent to your email address."
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:38
+msgid "This cryptographic hash is provided as a durable medium proof of your request. It can be recomputed from the exact data fields submitted if a dispute arises."
+msgstr ""
+
+#: includes/woocommerce/class-wc-orders.php:158
+msgid "This order has a withdrawal request pending review."
+msgstr ""
+
+#: includes/admin/class-settings.php:219
+msgid "This plugin provides technical tools to facilitate compliance with EU Directive 2023/2673. It does not constitute legal advice and does not guarantee legal compliance. Please consult a legal advisor."
+msgstr ""
+
+#: includes/class-plugin.php:315
+msgid "This product is exempt from the right of withdrawal under Article 16 of Directive 2011/83/EU."
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:485
+msgid "Timestamp"
+msgstr ""
+
+#: includes/woocommerce/class-wc-checkout.php:646
+msgid "Timestamp:"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:166 templates/annex-form.php:6
+msgid "To"
+msgstr ""
+
+#: includes/admin/class-settings.php:181
+msgid "Trader Address [MANDATORY]"
+msgstr ""
+
+#: includes/admin/class-settings.php:182
+msgid "Trader Email [MANDATORY]"
+msgstr ""
+
+#: includes/admin/class-settings.php:184
+msgid "Trader Fax [OPTIONAL]"
+msgstr ""
+
+#: includes/admin/class-settings.php:154
+msgid "Trader Info (Annex I.B)"
+msgstr ""
+
+#: includes/admin/class-settings.php:180
+msgid "Trader Name [MANDATORY]"
+msgstr ""
+
+#: includes/admin/class-settings.php:183
+msgid "Trader Phone [OPTIONAL]"
+msgstr ""
+
+#: includes/woocommerce/class-wc-emails.php:167
+msgid "Under EU consumer law, you have the right to withdraw from this purchase within the statutory withdrawal period. To exercise your right of withdrawal, please use the link below."
+msgstr ""
+
+#: includes/woocommerce/class-wc-emails.php:195
+msgid "Under EU consumer law, you have the right to withdraw from this purchase within the statutory withdrawal period. To exercise your right of withdrawal, please visit the following link:"
+msgstr ""
+
+#: includes/class-email-service.php:55
+#, php-format
+msgid "Update on your withdrawal request #%d — %s"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:341
+msgid "Update Status"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:131 includes/admin/class-admin-detail.php:493
+msgid "User Agent"
+msgstr ""
+
+#: includes/woocommerce/class-wc-checkout.php:648
+msgid "User Agent:"
+msgstr ""
+
+#: includes/class-public-form.php:189
+msgid "Valid email is required."
+msgstr ""
+
+#: templates/myaccount-withdrawal.php:111
+msgid "View request"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:115
+msgid "View Withdrawal Request"
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:4
+#, php-format
+msgid "We have received your request to withdraw from the contract with %s."
+msgstr ""
+
+#: templates/public-form-success.php:13
+msgid "We will process your request and issue the refund within 14 days of confirmation."
+msgstr ""
+
+#: templates/emails/receipt-confirmation.php:41
+msgid "We will process your request shortly. You will be notified when the status changes."
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:253
+msgid "When (UTC)"
+msgstr ""
+
+#: includes/class-gdpr.php:96
+msgid "When you request a withdrawal, we store your name, email address, order details, IP address, and browser user agent. This data is kept as durable proof of your request to comply with consumer protection laws (Directive 2023/2673)."
+msgstr ""
+
+#: includes/woocommerce/class-wc-myaccount.php:75 templates/myaccount-withdrawal.php:117
+msgid "Withdraw"
+msgstr ""
+
+#: includes/woocommerce/class-wc-orders.php:185 includes/woocommerce/class-wc-orders.php:191 templates/myaccount-withdrawal.php:57 templates/myaccount-withdrawal.php:94
+msgid "Withdrawal"
+msgstr ""
+
+#: includes/class-email-service.php:13
+#, php-format
+msgid "Withdrawal confirmation — %s"
+msgstr ""
+
+#: includes/woocommerce/class-wc-checkout.php:628
+msgid "Withdrawal Consents"
+msgstr ""
+
+#: includes/admin/class-settings.php:213
+msgid "Withdrawal EU Law — Settings"
+msgstr ""
+
+#: includes/admin/class-settings.php:159
+msgid "Withdrawal Page [MANDATORY]"
+msgstr ""
+
+#: trece-withdrawal-eu.php:105
+msgid "Withdrawal Request"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:109
+msgctxt "Post type singular name"
+msgid "Withdrawal Request"
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:619
+#, php-format
+msgid "Withdrawal request #%1$d status changed from \"%2$s\" to \"%3$s\"."
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:90
+#, php-format
+msgid "Withdrawal Request #%d"
+msgstr ""
+
+#: includes/woocommerce/class-wc-orders.php:310
+#, php-format
+msgid "Withdrawal request accepted (#%d)."
+msgstr ""
+
+#: includes/woocommerce/class-wc-orders.php:328
+#, php-format
+msgid "Withdrawal request completed (#%d)."
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:47
+msgid "Withdrawal request not found."
+msgstr ""
+
+#: includes/woocommerce/class-wc-orders.php:99
+msgid "withdrawal request pending review"
+msgid_plural "withdrawal requests pending review"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/woocommerce/class-wc-orders.php:302
+#, php-format
+msgid "Withdrawal request received (#%d)."
+msgstr ""
+
+#: includes/woocommerce/class-wc-orders.php:319
+#, php-format
+msgid "Withdrawal request rejected (#%1$d): %2$s"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:355
+#, php-format
+msgid "Withdrawal request status changed from \"%1$s\" to \"%2$s\"."
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:264
+msgid "Withdrawal request submitted."
+msgstr ""
+
+#: includes/admin/class-admin-log.php:125 includes/admin/class-settings.php:120 includes/class-gdpr.php:13 includes/class-gdpr.php:21 includes/class-gdpr.php:46 includes/class-gdpr.php:97
+msgid "Withdrawal Requests"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:108
+msgctxt "Post type general name"
+msgid "Withdrawal Requests"
+msgstr ""
+
+#: includes/class-public-form.php:211
+msgid "Withdrawal requests are not available for this order."
+msgstr ""
+
+#: includes/woocommerce/class-wc-product.php:157 includes/woocommerce/class-wc-product.php:188 includes/woocommerce/class-wc-product.php:95
+msgid "Withdrawal status"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:214
+#, php-format
+msgid "Withdrawal – %1$s – %2$s"
+msgstr ""
+
+#: includes/admin/class-admin-log.php:50 includes/admin/class-admin-log.php:51 includes/admin/class-settings.php:80 includes/admin/class-settings.php:81
+msgid "Withdrawals"
+msgstr ""
+
+#: includes/class-withdrawal-cpt.php:110
+msgctxt "Admin menu text"
+msgid "Withdrawals"
+msgstr ""
+
+#: includes/admin/class-settings.php:453
+msgid "WooCommerce is required for country restrictions."
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:365
+msgid "Yes"
+msgstr ""
+
+#: templates/emails/admin-notification.php:20
+msgid "You can review and process this request in the WordPress admin:"
+msgstr ""
+
+#: includes/admin/class-admin-export.php:141
+msgid "You do not have permission to export data."
+msgstr ""
+
+#: includes/admin/class-admin-detail.php:533 includes/admin/class-admin-log.php:214
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: includes/admin/class-settings.php:208
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: templates/myaccount-withdrawal.php:39
+msgid "You have no orders eligible for withdrawal."
+msgstr ""
+
+#: includes/class-public-form.php:195
+msgid "You must accept the privacy policy."
+msgstr ""
+
+#: includes/woocommerce/class-wc-checkout.php:245 includes/woocommerce/class-wc-checkout.php:375
+msgid "You must consent to the digital content terms to proceed."
+msgstr ""
+
+#: includes/woocommerce/class-wc-myaccount.php:169
+msgid "You need to be logged in to view this page."
+msgstr ""
+
+#: templates/public-form-success.php:5
+#, php-format
+msgid "Your request reference number is #%d."
+msgstr ""
+
+#: templates/public-form-success.php:4
+msgid "Your withdrawal request has been submitted successfully."
+msgstr ""
+
+#: includes/admin/class-settings.php:350
+msgid "— Select a page —"
 msgstr ""
