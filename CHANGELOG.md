@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.4.0
+- **Fix unauthenticated ownership-check bypass on public withdrawal form:** The 
+  step-2 branch of render() reconstructed the review payload from raw  $_POST 
+  and minted a transient token guarded only by isset() on the nonce,
+  letting any unauthenticated POST disclose a WooCommerce order's line items
+  by order number and forge withdrawal requests against arbitrary orders.
+- **Single-source the plugin version on the plugin header:** TRECE_WDEU_VERSION 
+  was hand-maintained alongside the plugin header's Version: line and the 
+  README badge, so the three drifted out of sync (header 1.3.0 vs tag/CHANGELOG 1.3.1).
+- **Add release tool and maintainer docs:** `npm run release X.Y.Z` orchestrates
+  a local release: bump version, rebuild assets, commit, tag, and produce 
+  dist/trece-withdrawal-eu-X.Y.Z.zip ready to attach to a GitHub release. 
+  The zip is built from git archive of the freshly created tag (not the working 
+  tree) and prunes dev-only meta (scripts/, package.json, .distignore, .gitignore,
+  doc/) but keeps both minified and unminified assets so SCRIPT_DEBUG works on installs.
+
 ## 1.3.1
 - Spanish String Translations fix
 
