@@ -1,6 +1,6 @@
 # Withdrawal EU Law Wordpress Plugin
 
-**Version:** 1.4.2
+**Version:** 1.5.0
 **Author:** [13Node](https://13node.com)
 **License:** GPL v2 or later
 **Text Domain:** `trece-withdrawal-eu`
