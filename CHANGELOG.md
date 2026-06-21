@@ -1,5 +1,57 @@
 # Changelog
 
+## 1.5.0
+- **ALTCHA spam protection on the public withdrawal form:**
+  Optional, self-hosted, GDPR-friendly proof-of-work CAPTCHA — no
+  third-party calls, no cookies, no tracking. Disabled by default;
+  enable under Withdrawals → Settings → Spam Protection. The challenge
+  is generated server-side (signed with an HMAC secret auto-generated
+  on first use) and verified before any other step-1 validation. The
+  auto-withdraw fast path and step-2 review remain untouched — they
+  already have stronger ownership checks. ALTCHA widget bundled in
+  `assets/js/altcha.min.js` so the plugin makes no outbound network
+  calls at runtime.
+
+## 1.4.2
+- **Small change to the gobal withdraw form:** 
+  Added a header and a short description on how the form shall be used.
+
+## 1.4.1
+- **Bug fix and layout change:**
+  Fix duplicate Withdrawals menu and consolidate the detail-page layout
+    
+  Trece_WDEU_Settings re-registered the top-level Withdrawals menu under
+  the same slug Trece_WDEU_Admin_Log already owned. WP doesn't dedupe
+  add_menu_page() by slug, so the sidebar showed two Withdrawals entries
+  and a single page load fired both callbacks, rendering the request list
+  twice. Settings now only registers its submenu against the existing
+  parent and the orphan render_top_level_page helper is removed.
+    
+  On the request detail page, the right-column sidebar (width:35%) sat
+  wider than WP's default 281px reservation on #post-body-content, so the
+  Status / Audit Trail boxes overflowed leftward and didn't line up with
+  the main-column boxes. Dropped the two-column layout in favour of a
+  single full-width stack, and merged the Audit Trail content into the
+  Status box (dropping duplicated Current Status / Admin Comment rows
+  already shown in the status form) so the page isn't padded with sparse
+  half-empty boxes.
+
+## 1.4.0
+- **Fix unauthenticated ownership-check bypass on public withdrawal form:** The 
+  step-2 branch of render() reconstructed the review payload from raw  $_POST 
+  and minted a transient token guarded only by isset() on the nonce,
+  letting any unauthenticated POST disclose a WooCommerce order's line items
+  by order number and forge withdrawal requests against arbitrary orders.
+- **Single-source the plugin version on the plugin header:** TRECE_WDEU_VERSION 
+  was hand-maintained alongside the plugin header's Version: line and the 
+  README badge, so the three drifted out of sync (header 1.3.0 vs tag/CHANGELOG 1.3.1).
+- **Add release tool and maintainer docs:** `npm run release X.Y.Z` orchestrates
+  a local release: bump version, rebuild assets, commit, tag, and produce 
+  dist/trece-withdrawal-eu-X.Y.Z.zip ready to attach to a GitHub release. 
+  The zip is built from git archive of the freshly created tag (not the working 
+  tree) and prunes dev-only meta (scripts/, package.json, .distignore, .gitignore,
+  doc/) but keeps both minified and unminified assets so SCRIPT_DEBUG works on installs.
+
 ## 1.3.1
 - Spanish String Translations fix
 

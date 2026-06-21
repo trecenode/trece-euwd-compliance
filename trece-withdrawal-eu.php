@@ -3,7 +3,7 @@
  * Plugin Name:       Withdrawal EU Law
  * Plugin URI:        https://13node.com/plugins/withdrawal-eu-law
  * Description:       Implements the EU Directive 2023/2673 electronic withdrawal function for WooCommerce stores. Provides a compliant withdrawal button, consent management, and automated confirmation emails.
- * Version:           1.3.0
+ * Version:           1.5.0
  * Author:            13Node
  * Author URI:        https://13node.com
  * License:           GPL v2 or later
@@ -26,9 +26,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin version.
  *
+ * Derived from the plugin header above so the `Version:` line is the single
+ * source of truth at runtime. `get_file_data()` is provided by wp-includes
+ * and is available the moment a plugin file is loaded.
+ *
  * @var string
  */
-define( 'TRECE_WDEU_VERSION', '1.3.0' );
+$trece_wdeu_plugin_data = get_file_data( __FILE__, array( 'Version' => 'Version' ) );
+define( 'TRECE_WDEU_VERSION', $trece_wdeu_plugin_data['Version'] );
+unset( $trece_wdeu_plugin_data );
 
 /**
  * Plugin directory path (with trailing slash).

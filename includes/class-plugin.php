@@ -138,6 +138,7 @@ class Trece_WDEU_Plugin {
 		require_once TRECE_WDEU_PATH . 'includes/class-shortcodes.php';
 		require_once TRECE_WDEU_PATH . 'includes/class-email-service.php';
 		require_once TRECE_WDEU_PATH . 'includes/class-gdpr.php';
+		require_once TRECE_WDEU_PATH . 'includes/class-altcha.php';
 
 		new Trece_WDEU_CPT();
 		Trece_WDEU_Public_Form::init();
@@ -231,6 +232,19 @@ class Trece_WDEU_Plugin {
 				TRECE_WDEU_VERSION,
 				true
 			);
+
+			// ALTCHA widget, only on the withdrawal page when enabled.
+			if ( is_page( absint( $settings['withdrawal_page_id'] ) )
+				&& class_exists( 'Trece_WDEU_Altcha' )
+				&& Trece_WDEU_Altcha::is_enabled() ) {
+				wp_enqueue_script(
+					'trece-wdeu-altcha',
+					TRECE_WDEU_URL . 'assets/js/altcha.min.js',
+					array(),
+					TRECE_WDEU_VERSION,
+					true
+				);
+			}
 		}
 	}
 
@@ -324,6 +338,7 @@ class Trece_WDEU_Plugin {
 			'trader_fax'                   => '',
 			'eligible_statuses'            => array( 'processing', 'completed' ),
 			'show_in_emails'               => true,
+			'spam_protection_altcha'       => false,
 		);
 
 		$saved = get_option( 'trece_wdeu_settings', array() );

@@ -1,5 +1,7 @@
 .claude/
 node_modules/
 package-lock.json
+dist/
 # DevNotes – private dev annotations (never ship to clients)
 .vscode/dev-notes.json
+doc/

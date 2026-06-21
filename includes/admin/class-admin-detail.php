@@ -100,9 +100,8 @@ class Trece_WDEU_Admin_Detail {
 			<?php settings_errors( 'trece_wdeu_detail' ); ?>
 
 			<div id="poststuff">
-				<div id="post-body" class="metabox-holder columns-2">
+				<div id="post-body" class="metabox-holder columns-1">
 
-					<?php // ── LEFT COLUMN ──────────────────────────────────── ?>
 					<div id="post-body-content" style="position:relative;">
 
 						<?php // Metabox: Customer Details. ?>
@@ -277,12 +276,7 @@ class Trece_WDEU_Admin_Detail {
 						</div>
 						<?php endif; ?>
 
-					</div>
-
-					<?php // ── RIGHT COLUMN (sidebar) ───────────────────────── ?>
-					<div id="postbox-container-1" class="postbox-container" style="width:35%;">
-
-						<?php // Metabox: Status. ?>
+						<?php // Metabox: Status (with audit trail). ?>
 						<div class="postbox">
 							<h2 class="hndle"><span><?php esc_html_e( 'Status', 'trece-withdrawal-eu' ); ?></span></h2>
 							<div class="inside">
@@ -306,7 +300,7 @@ class Trece_WDEU_Admin_Detail {
 												</label>
 											</th>
 											<td>
-												<select id="trece-wdeu-new-status" name="trece_wdeu_new_status" style="width:100%;">
+												<select id="trece-wdeu-new-status" name="trece_wdeu_new_status">
 													<?php
 													foreach ( array( 'pending', 'accepted', 'rejected', 'completed' ) as $s ) :
 														?>
@@ -328,7 +322,7 @@ class Trece_WDEU_Admin_Detail {
 													id="trece-wdeu-admin-comment"
 													name="trece_wdeu_admin_comment"
 													rows="4"
-													style="width:100%;"
+													class="large-text"
 													placeholder="<?php esc_attr_e( 'Required when rejecting a request.', 'trece-withdrawal-eu' ); ?>"
 												><?php echo esc_textarea( $admin_comment ); ?></textarea>
 												<p class="description">
@@ -340,13 +334,10 @@ class Trece_WDEU_Admin_Detail {
 
 									<?php submit_button( __( 'Update Status', 'trece-withdrawal-eu' ), 'primary', 'trece_wdeu_update_status' ); ?>
 								</form>
-							</div>
-						</div>
 
-						<?php // Metabox: Audit Trail. ?>
-						<div class="postbox">
-							<h2 class="hndle"><span><?php esc_html_e( 'Audit Trail', 'trece-withdrawal-eu' ); ?></span></h2>
-							<div class="inside">
+								<hr style="margin: 1.5em 0;" />
+
+								<h3 style="margin-top: 0;"><?php esc_html_e( 'Audit Trail', 'trece-withdrawal-eu' ); ?></h3>
 								<table class="widefat fixed striped">
 									<tbody>
 										<tr>
@@ -372,20 +363,6 @@ class Trece_WDEU_Admin_Detail {
 												?>
 											</td>
 										</tr>
-										<tr>
-											<th scope="row"><?php esc_html_e( 'Current Status', 'trece-withdrawal-eu' ); ?></th>
-											<td>
-												<span class="trece-wdeu-status trece-wdeu-status-<?php echo esc_attr( $status ); ?>">
-													<?php echo esc_html( ucfirst( $status ) ); ?>
-												</span>
-											</td>
-										</tr>
-										<?php if ( $admin_comment ) : ?>
-										<tr>
-											<th scope="row"><?php esc_html_e( 'Admin Comment', 'trece-withdrawal-eu' ); ?></th>
-											<td><?php echo esc_html( $admin_comment ); ?></td>
-										</tr>
-										<?php endif; ?>
 									</tbody>
 								</table>
 							</div>

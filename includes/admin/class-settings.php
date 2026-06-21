@@ -65,28 +65,15 @@ class Trece_WDEU_Settings {
 	*/
 
 	/**
-	 * Register the top-level "Withdrawals" menu and the "Settings" submenu.
+	 * Register the "Settings" submenu under the existing "Withdrawals" parent.
 	 *
-	 * The top-level page callback points to the All Requests list (rendered
-	 * by {@see Trece_WDEU_Admin_Log}). The Settings submenu renders via
-	 * this class.
+	 * The top-level "Withdrawals" menu is registered by
+	 * {@see Trece_WDEU_Admin_Log::register_menu()}; this class only attaches
+	 * its submenu to that parent slug.
 	 *
 	 * @return void
 	 */
 	public function register_menus() {
-
-		// ── Top-level menu ─────────────────────────────────────────────
-		add_menu_page(
-			__( 'Withdrawals', 'trece-withdrawal-eu' ),
-			__( 'Withdrawals', 'trece-withdrawal-eu' ),
-			self::CAPABILITY,
-			'trece-withdrawal-eu',
-			array( $this, 'render_top_level_page' ),
-			'dashicons-shield',
-			56
-		);
-
-		// ── Settings submenu ───────────────────────────────────────────
 		add_submenu_page(
 			'trece-withdrawal-eu',
 			__( 'Settings — Withdrawal EU Law', 'trece-withdrawal-eu' ),
@@ -95,31 +82,6 @@ class Trece_WDEU_Settings {
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
 		);
-	}
-
-	/**
-	 * Render the top-level menu page.
-	 *
-	 * Delegates to {@see Trece_WDEU_Admin_Log} if it is available.
-	 * Otherwise renders a minimal fallback pointing the admin to
-	 * the Settings sub-page.
-	 *
-	 * @return void
-	 */
-	public function render_top_level_page() {
-
-		// Admin_Log registers its own render_page callback.
-		// If it is loaded, call it.
-		if ( class_exists( 'Trece_WDEU_Admin_Log' ) ) {
-			$log = new Trece_WDEU_Admin_Log();
-			$log->render_page();
-			return;
-		}
-
-		echo '<div class="wrap">';
-		echo '<h1>' . esc_html__( 'Withdrawal Requests', 'trece-withdrawal-eu' ) . '</h1>';
-		echo '<p>' . esc_html__( 'No requests found. Configure the plugin under Settings.', 'trece-withdrawal-eu' ) . '</p>';
-		echo '</div>';
 	}
 
 	/*
@@ -153,6 +115,7 @@ class Trece_WDEU_Settings {
 		$this->add_section( 'excluded_notices', __( 'Excluded Notices', 'trece-withdrawal-eu' ) );
 		$this->add_section( 'trader_info', __( 'Trader Info (Annex I.B)', 'trece-withdrawal-eu' ) );
 		$this->add_section( 'email', __( 'Email', 'trece-withdrawal-eu' ) );
+		$this->add_section( 'spam_protection', __( 'Spam Protection', 'trece-withdrawal-eu' ) );
 		$this->add_section( 'advanced', __( 'Advanced', 'trece-withdrawal-eu' ) );
 
 		// ── General ────────────────────────────────────────────────────
@@ -186,6 +149,9 @@ class Trece_WDEU_Settings {
 		// ── Email ──────────────────────────────────────────────────────
 		$this->add_field( 'email', 'admin_email', __( 'Admin Notification Email [MANDATORY]', 'trece-withdrawal-eu' ), 'render_email_field' );
 		$this->add_field( 'email', 'show_in_emails', __( 'Show Withdrawal Link in Order Emails [RECOMMENDED]', 'trece-withdrawal-eu' ), 'render_checkbox_field' );
+
+		// ── Spam Protection ────────────────────────────────────────────
+		$this->add_field( 'spam_protection', 'spam_protection_altcha', __( 'Enable ALTCHA challenge on the public withdrawal form [RECOMMENDED]', 'trece-withdrawal-eu' ), 'render_checkbox_field' );
 
 		// ── Advanced ───────────────────────────────────────────────────
 		$this->add_field( 'advanced', 'eligible_statuses', __( 'Eligible Order Statuses [RECOMMENDED]', 'trece-withdrawal-eu' ), 'render_eligible_statuses_field' );
@@ -551,6 +517,9 @@ class Trece_WDEU_Settings {
 		// ── Email ──────────────────────────────────────────────────────
 		$clean['admin_email']    = isset( $input['admin_email'] ) ? sanitize_email( $input['admin_email'] ) : get_option( 'admin_email' );
 		$clean['show_in_emails'] = ! empty( $input['show_in_emails'] );
+
+		// ── Spam Protection ────────────────────────────────────────────
+		$clean['spam_protection_altcha'] = ! empty( $input['spam_protection_altcha'] );
 
 		// ── Advanced ───────────────────────────────────────────────────
 		if ( isset( $input['eligible_statuses'] ) && is_array( $input['eligible_statuses'] ) ) {

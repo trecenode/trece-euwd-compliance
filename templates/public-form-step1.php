@@ -1,5 +1,10 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 
+<h2 class="trece-wdeu-form-heading"><?php esc_html_e( 'Withdrawal Form', 'trece-withdrawal-eu' ); ?></h2>
+<p class="trece-wdeu-form-intro">
+    <?php esc_html_e( 'Use this form if you ordered without having registered with us. Otherwise login and use the button links to create you withdraw request.', 'trece-withdrawal-eu' ); ?>
+</p>
+
 <form method="post" action="" class="trece-wdeu-form trece-wdeu-step1">
     <input type="hidden" name="trece_wdeu_action" value="submit_withdrawal">
     <input type="hidden" name="trece_wdeu_step" value="1">
@@ -68,6 +73,17 @@
             <?php esc_html_e( 'I accept the privacy policy', 'trece-withdrawal-eu' ); ?>
         </label>
     </div>
+
+    <?php if ( class_exists( 'Trece_WDEU_Altcha' ) && Trece_WDEU_Altcha::is_enabled() ) :
+        $trece_wdeu_altcha_challenge = Trece_WDEU_Altcha::create_challenge();
+        ?>
+        <div class="trece-wdeu-field trece-wdeu-altcha">
+            <altcha-widget
+                auto="onsubmit"
+                challenge="<?php echo esc_attr( wp_json_encode( $trece_wdeu_altcha_challenge ) ); ?>"
+            ></altcha-widget>
+        </div>
+    <?php endif; ?>
 
     <button type="submit" class="trece-wdeu-btn trece-wdeu-btn-primary">
         <?php esc_html_e( 'Continue to review', 'trece-withdrawal-eu' ); ?>
