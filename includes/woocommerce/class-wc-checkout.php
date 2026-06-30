@@ -456,10 +456,6 @@ class Trece_WDEU_WC_Checkout {
 	 *
 	 * Cached for a month; busted on product / category changes.
 	 *
-	 * ponytail: full published-catalog scan, cached monthly. If catalogs grow
-	 * to tens of thousands of products, pre-filter by the status meta + flagged
-	 * category terms before resolving.
-	 *
 	 * @return array{digital_content:int[],service_early:int[]}
 	 */
 	public static function get_consent_product_ids() {
