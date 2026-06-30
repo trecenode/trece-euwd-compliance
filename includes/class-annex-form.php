@@ -6,17 +6,21 @@ class Trece_WDEU_Annex_Form {
         add_action('template_redirect', [__CLASS__, 'handle_print_view']);
     }
 
+    private static function get_trader_data() {
+        $settings = Trece_WDEU_Plugin::instance()->get_settings();
+        return apply_filters('trece_wdeu_annex_trader_data', [
+            'name' => $settings['trader_name'] ?? '',
+            'address' => $settings['trader_address'] ?? '',
+            'email' => $settings['trader_email'] ?? '',
+            'phone' => $settings['trader_phone'] ?? '',
+            'fax' => $settings['trader_fax'] ?? ''
+        ]);
+    }
+
     public static function handle_print_view() {
         if (isset($_GET['print']) && $_GET['print'] === 'annex') {
-            $settings = Trece_WDEU_Plugin::instance()->get_settings();
-            $trader = apply_filters('trece_wdeu_annex_trader_data', [
-                'name' => $settings['trader_name'] ?? '',
-                'address' => $settings['trader_address'] ?? '',
-                'email' => $settings['trader_email'] ?? '',
-                'phone' => $settings['trader_phone'] ?? '',
-                'fax' => $settings['trader_fax'] ?? ''
-            ]);
-            
+            $trader = self::get_trader_data();
+
             echo '<!DOCTYPE html><html><head><title>Annex I.B</title>';
             echo '<style>body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }</style>';
             echo '</head><body onload="window.print()">';
@@ -27,14 +31,7 @@ class Trece_WDEU_Annex_Form {
     }
 
     public static function render() {
-        $settings = Trece_WDEU_Plugin::instance()->get_settings();
-        $trader = apply_filters('trece_wdeu_annex_trader_data', [
-            'name' => $settings['trader_name'] ?? '',
-            'address' => $settings['trader_address'] ?? '',
-            'email' => $settings['trader_email'] ?? '',
-            'phone' => $settings['trader_phone'] ?? '',
-            'fax' => $settings['trader_fax'] ?? ''
-        ]);
+        $trader = self::get_trader_data();
 
         ob_start();
         echo '<details class="trece-wdeu-annex">';

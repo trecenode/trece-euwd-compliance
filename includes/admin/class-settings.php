@@ -65,26 +65,15 @@ class Trece_WDEU_Settings {
 	*/
 
 	/**
-	 * Register the top-level "Withdrawals" menu and the "Settings" submenu.
+	 * Register the "Settings" submenu under the "Withdrawals" menu.
 	 *
-	 * The top-level page callback points to the All Requests list (rendered
-	 * by {@see Trece_WDEU_Admin_Log}). The Settings submenu renders via
-	 * this class.
+	 * The top-level "Withdrawals" menu is registered by
+	 * {@see Trece_WDEU_Admin_Log}; this class only attaches its Settings
+	 * submenu to that existing parent.
 	 *
 	 * @return void
 	 */
 	public function register_menus() {
-
-		// ── Top-level menu ─────────────────────────────────────────────
-		add_menu_page(
-			__( 'Withdrawals', 'trece-withdrawal-eu' ),
-			__( 'Withdrawals', 'trece-withdrawal-eu' ),
-			self::CAPABILITY,
-			'trece-withdrawal-eu',
-			array( $this, 'render_top_level_page' ),
-			'dashicons-shield',
-			56
-		);
 
 		// ── Settings submenu ───────────────────────────────────────────
 		add_submenu_page(
@@ -95,31 +84,6 @@ class Trece_WDEU_Settings {
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
 		);
-	}
-
-	/**
-	 * Render the top-level menu page.
-	 *
-	 * Delegates to {@see Trece_WDEU_Admin_Log} if it is available.
-	 * Otherwise renders a minimal fallback pointing the admin to
-	 * the Settings sub-page.
-	 *
-	 * @return void
-	 */
-	public function render_top_level_page() {
-
-		// Admin_Log registers its own render_page callback.
-		// If it is loaded, call it.
-		if ( class_exists( 'Trece_WDEU_Admin_Log' ) ) {
-			$log = new Trece_WDEU_Admin_Log();
-			$log->render_page();
-			return;
-		}
-
-		echo '<div class="wrap">';
-		echo '<h1>' . esc_html__( 'Withdrawal Requests', 'trece-withdrawal-eu' ) . '</h1>';
-		echo '<p>' . esc_html__( 'No requests found. Configure the plugin under Settings.', 'trece-withdrawal-eu' ) . '</p>';
-		echo '</div>';
 	}
 
 	/*

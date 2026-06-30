@@ -62,7 +62,6 @@ class Trece_WDEU_Admin_Detail {
 		$receipt_hash   = get_post_meta( $post_id, '_trece_wdeu_receipt_hash', true );
 		$status         = get_post_meta( $post_id, '_trece_wdeu_status', true );
 		$status         = $status ? $status : 'pending';
-		$resolved_at    = get_post_meta( $post_id, '_trece_wdeu_resolved_at', true );
 		$admin_comment  = get_post_meta( $post_id, '_trece_wdeu_admin_comment', true );
 		$email_sent     = get_post_meta( $post_id, '_trece_wdeu_email_sent', true );
 		$email_sent_at  = get_post_meta( $post_id, '_trece_wdeu_email_sent_at', true );
@@ -280,7 +279,7 @@ class Trece_WDEU_Admin_Detail {
 					</div>
 
 					<?php // ── RIGHT COLUMN (sidebar) ───────────────────────── ?>
-					<div id="postbox-container-1" class="postbox-container" style="width:35%;">
+					<div id="postbox-container-1" class="postbox-container">
 
 						<?php // Metabox: Status. ?>
 						<div class="postbox">
@@ -291,6 +290,20 @@ class Trece_WDEU_Admin_Detail {
 									<span class="trece-wdeu-status trece-wdeu-status-<?php echo esc_attr( $status ); ?>">
 										<?php echo esc_html( ucfirst( $status ) ); ?>
 									</span>
+								</p>
+
+								<p>
+									<?php esc_html_e( 'Email sent:', 'trece-withdrawal-eu' ); ?>
+									<?php
+									if ( '1' === $email_sent ) {
+										echo esc_html__( 'Yes', 'trece-withdrawal-eu' );
+										if ( $email_sent_at ) {
+											echo ' — ' . esc_html( $email_sent_at );
+										}
+									} else {
+										esc_html_e( 'No', 'trece-withdrawal-eu' );
+									}
+									?>
 								</p>
 
 								<form method="post" action="">
@@ -340,54 +353,6 @@ class Trece_WDEU_Admin_Detail {
 
 									<?php submit_button( __( 'Update Status', 'trece-withdrawal-eu' ), 'primary', 'trece_wdeu_update_status' ); ?>
 								</form>
-							</div>
-						</div>
-
-						<?php // Metabox: Audit Trail. ?>
-						<div class="postbox">
-							<h2 class="hndle"><span><?php esc_html_e( 'Audit Trail', 'trece-withdrawal-eu' ); ?></span></h2>
-							<div class="inside">
-								<table class="widefat fixed striped">
-									<tbody>
-										<tr>
-											<th scope="row"><?php esc_html_e( 'Submitted', 'trece-withdrawal-eu' ); ?></th>
-											<td><?php echo esc_html( $submitted_at ? $submitted_at : '—' ); ?></td>
-										</tr>
-										<tr>
-											<th scope="row"><?php esc_html_e( 'Resolved', 'trece-withdrawal-eu' ); ?></th>
-											<td><?php echo esc_html( $resolved_at ? $resolved_at : '—' ); ?></td>
-										</tr>
-										<tr>
-											<th scope="row"><?php esc_html_e( 'Email Sent', 'trece-withdrawal-eu' ); ?></th>
-											<td>
-												<?php
-												if ( '1' === $email_sent ) {
-													echo esc_html__( 'Yes', 'trece-withdrawal-eu' );
-													if ( $email_sent_at ) {
-														echo ' — ' . esc_html( $email_sent_at );
-													}
-												} else {
-													esc_html_e( 'No', 'trece-withdrawal-eu' );
-												}
-												?>
-											</td>
-										</tr>
-										<tr>
-											<th scope="row"><?php esc_html_e( 'Current Status', 'trece-withdrawal-eu' ); ?></th>
-											<td>
-												<span class="trece-wdeu-status trece-wdeu-status-<?php echo esc_attr( $status ); ?>">
-													<?php echo esc_html( ucfirst( $status ) ); ?>
-												</span>
-											</td>
-										</tr>
-										<?php if ( $admin_comment ) : ?>
-										<tr>
-											<th scope="row"><?php esc_html_e( 'Admin Comment', 'trece-withdrawal-eu' ); ?></th>
-											<td><?php echo esc_html( $admin_comment ); ?></td>
-										</tr>
-										<?php endif; ?>
-									</tbody>
-								</table>
 							</div>
 						</div>
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.4.0
+
+*Security fix, admin menu and request-detail fixes.*
+
+- **Security (important):** fixed an unauthenticated ownership-check bypass on the
+  public withdrawal form. The review step could be reached with a crafted POST
+  without verifying the request nonce or that the email matched the order, which
+  disclosed a WooCommerce order's line items by order number and allowed forging
+  withdrawal requests against arbitrary orders. The review token is now minted
+  server-side only after the email-vs-order ownership check, the form no longer
+  rebuilds order data from raw request input, and ownership is re-asserted before
+  a request is created. **Upgrading is recommended.**
+- Admin cleanup: removed the duplicate "Withdrawals" menu (the request list no
+  longer renders twice), tidied the request-detail layout into a single
+  "Activity Log" history with "Email Sent" shown in the Status box, and trimmed
+  some dead internal code.
+
 ## 1.3.1
 - Spanish String Translations fix
 

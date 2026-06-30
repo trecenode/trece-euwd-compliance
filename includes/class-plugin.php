@@ -72,20 +72,6 @@ class Trece_WDEU_Plugin {
 		add_action( 'plugins_loaded', array( $this, 'init' ), 15 );
 	}
 
-	/**
-	 * Prevent cloning.
-	 */
-	private function __clone() {}
-
-	/**
-	 * Prevent unserialization.
-	 *
-	 * @throws \RuntimeException Always.
-	 */
-	public function __wakeup() {
-		throw new \RuntimeException( esc_html__( 'Cannot unserialize singleton.', 'trece-withdrawal-eu' ) );
-	}
-
 	/*
 	|----------------------------------------------------------------------
 	| Initialisation
@@ -250,7 +236,6 @@ class Trece_WDEU_Plugin {
 			'toplevel_page_trece-withdrawal-eu',
 			'withdrawals_page_trece-wdeu-settings',
 			'withdrawals_page_trece-wdeu-export',
-			'withdrawals_page_trece-wdeu-detail',
 		);
 
 		if ( ! in_array( $hook_suffix, $plugin_pages, true ) ) {

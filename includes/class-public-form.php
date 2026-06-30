@@ -9,6 +9,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Trece_WDEU_Public_Form {
 
+	/**
+	 * Review token minted in handle_submission() (init hook) and consumed by
+	 * render() (shortcode) within the same request. Never derived from $_POST.
+	 *
+	 * @var string
+	 */
+	private static $pending_token = '';
+
 	public static function init() {
 		add_shortcode( 'trece_withdrawal_form', [ __CLASS__, 'render' ] );
 		add_action( 'init', [ __CLASS__, 'handle_submission' ] );
@@ -62,34 +70,16 @@ class Trece_WDEU_Public_Form {
                 }
             }
 
-            if ( $step === 2 && empty( $errors ) && ( isset( $_POST['trece_wdeu_nonce'] ) || isset( $token ) ) ) {
-                // Render step 2
-                if ( ! isset( $data ) ) {
-                    $data = [
-                        'customer_name'  => sanitize_text_field( $_POST['customer_name'] ?? '' ),
-                        'customer_email' => sanitize_email( $_POST['customer_email'] ?? '' ),
-                        'order_number'   => sanitize_text_field( $_POST['order_number'] ?? '' ),
-                        'order_date'     => sanitize_text_field( $_POST['order_date'] ?? '' ),
-                        'scope'          => sanitize_text_field( $_POST['scope'] ?? 'full' ),
-                        'products'       => sanitize_textarea_field( $_POST['products'] ?? '' ),
-                    ];
+            // The review token is server-minted only: by the auto-withdraw fast
+            // path above ($token local) or by step 1 of handle_submission()
+            // (carried via the private static). It is never reconstructed from
+            // raw $_POST here, so an unauthenticated POST cannot reach step 2.
+            if ( empty( $token ) ) {
+                $token = self::$pending_token;
+            }
+            $data = $token ? get_transient( 'trece_wdeu_token_' . $token ) : false;
 
-                    // For WooCommerce orders, replace the free-text products with
-                    // the actual order lines classified into withdrawable/excluded.
-                    if ( Trece_WDEU_Plugin::instance()->is_woocommerce_active() && ! empty( $data['order_number'] ) ) {
-                        $order = self::resolve_order( $data['order_number'] );
-                        if ( $order ) {
-                            $classified = Trece_WDEU_WC_Product::classify_order_items( $order );
-                            $data['products']       = $classified['withdrawable'];
-                            $data['excluded_items'] = $classified['excluded'];
-                            $data['scope']          = empty( $classified['excluded'] ) ? 'full' : 'partial';
-                        }
-                    }
-
-                    $token = wp_generate_password( 32, false );
-                    set_transient( 'trece_wdeu_token_' . $token, $data, 15 * MINUTE_IN_SECONDS );
-                }
-
+            if ( $step === 2 && empty( $errors ) && $data ) {
                 include TRECE_WDEU_PATH . 'templates/public-form-step2.php';
 		} else {
 			// Render step 1
@@ -240,7 +230,33 @@ class Trece_WDEU_Public_Form {
 				// Let the form re-render with errors
 				$_POST['trece_wdeu_step'] = 1;
 			} else {
-				// Step 1 valid → advance to the review step on render.
+				// Step 1 valid (ownership verified above) → build the review
+				// payload server-side and mint a single-use token. render()
+				// only ever displays a token minted here, so the order data is
+				// never disclosed to an unauthenticated request.
+				$data = [
+					'customer_name'  => sanitize_text_field( $_POST['customer_name'] ?? '' ),
+					'customer_email' => sanitize_email( $_POST['customer_email'] ?? '' ),
+					'order_number'   => sanitize_text_field( $_POST['order_number'] ?? '' ),
+					'order_date'     => sanitize_text_field( $_POST['order_date'] ?? '' ),
+					'scope'          => sanitize_text_field( $_POST['scope'] ?? 'full' ),
+					'products'       => sanitize_textarea_field( $_POST['products'] ?? '' ),
+				];
+
+				// WooCommerce: replace free-text products with the order's
+				// actual lines, reusing the order validated above.
+				if ( $is_wc && ! empty( $data['order_number'] ) && ! empty( $order ) ) {
+					$classified             = Trece_WDEU_WC_Product::classify_order_items( $order );
+					$data['products']       = $classified['withdrawable'];
+					$data['excluded_items'] = $classified['excluded'];
+					$data['scope']          = empty( $classified['excluded'] ) ? 'full' : 'partial';
+				}
+
+				$token = wp_generate_password( 32, false );
+				set_transient( 'trece_wdeu_token_' . $token, $data, 15 * MINUTE_IN_SECONDS );
+				self::$pending_token = $token;
+
+				// Advance to the review step on render.
 				$_POST['trece_wdeu_step'] = 2;
 			}
 
@@ -257,6 +273,18 @@ class Trece_WDEU_Public_Form {
 			}
 
 			delete_transient( 'trece_wdeu_token_' . $token );
+
+			// Defence in depth: re-assert email-vs-order ownership before
+			// creating anything, so a leaked or replayed token cannot be used
+			// against an order it does not match. Resolve the order once and
+			// reuse it for $wc_order_id below.
+			$order = Trece_WDEU_Plugin::instance()->is_woocommerce_active()
+				? self::resolve_order( $data['order_number'] ?? '' )
+				: null;
+
+			if ( $order && strtolower( $order->get_billing_email() ) !== strtolower( $data['customer_email'] ?? '' ) ) {
+				wp_die( __( 'This withdrawal request could not be verified.', 'trece-withdrawal-eu' ) );
+			}
 
 			// If the order's lines were classified (structured products array),
 			// honour the customer's per-line selection from the review step.
@@ -282,8 +310,7 @@ class Trece_WDEU_Public_Form {
 					: 'partial';
 			}
 
-			// Determine the linked WooCommerce order, if any.
-			$order       = Trece_WDEU_Plugin::instance()->is_woocommerce_active() ? self::resolve_order( $data['order_number'] ?? '' ) : null;
+			// Linked WooCommerce order (resolved above for the ownership re-check).
 			$wc_order_id = $order ? $order->get_id() : 0;
 
 			$submitted_at = current_time( 'mysql', true );
